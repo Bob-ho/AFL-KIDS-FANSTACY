@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="css/util.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!--===============================================================================================-->
+    <script type="text/javascript">
+
+
+        function reqListener() {
+            var json = JSON.parse(this.responseText)
+            for (var i = 0; i < json.length; i++) {
+
+                var option = document.createElement("option");
+                option.text = json[i].name;
+                option.value = json[i].code;
+                var select = document.getElementById("dropdownMenuButton");
+                select.appendChild(option);
+            }
+
+        }
+
+        var oReq = new XMLHttpRequest();
+        oReq.addEventListener("load", reqListener);
+        oReq.open("GET", "/teams");
+        oReq.send();
+
+
+    </script>
+
+
+</head>
+
+
+<body data-spy="scroll" data-target=".navbar" data-offset="50">
+
+
+<!-- The navbar - The <a> elements are used to jump to a section in the scrollable area -->
+<nav class="navbar navbar-expand-sm bg-light navbar-light fixed-top">
+
+    <a class="navbar-brand" href="#">
+        <img src="/images/Kflcut.png" width="50" height="50" alt="">
+    </a>
+
+    <ul class="navbar-nav">
+
+
+        <li class="text-center"><a href="#what">What is KFL</a></li>
+
+        <li class="text-center"><a href="#how">How do I play?</a></li>
+
+        <li class="text-center"><a href="#whatg">What do I get?</a></li>
+
+        <li class="text-center"><a href="#whatA">What is the AFL?</a></li>
+
+        <li class="text-center"><a href="#" data-toggle="modal" data-target="#modalLoginForm">Login/Sign Up</a></li>
+    </ul>
+
+</nav>
+
+
+<div class="parallax">
+
+    <div class="caption1">
+        <span class="border">Welcome to the</span>
+    </div>
+    <div class="caption">
+        <span class="border">K  <span style="color: red">F</span> L</span>
+    </div>
+    <div class="caption2">
+        <span class="border"><span style="color: red">K</span>ids <span style="color: red">F</span>antasy <span
+                style="color: red">L</span>eague</span>
+    </div>
+
+</div>
+<div class="bodyContainer" id="what">
+
+
+    <!-- Section 1 -->
+    <div>
+
+        <h1>What is KFL?</h1>
+        <p>Kid's Footy League</p>
+
+        <p>Kids version of the original AFL Fantasy League.</p>
+
+        <p>Aimed at 5-12 year old children.</p>
+
+        <p>The objective is to engage more children in the AFL.</p>
+
+        <p>Kid's can select their favorite players, follow AFL matches and compete with other kids to reach the top spot
+            on the leaderboard.</p>
+    </div>
+</div>
+
+<div class="parallax1"></div>
+<div class="bodyContainer"id="how">
+    <div>
+        <h1>How do I play?</h1>
+        <p>Register on the portal with the help of your parents.</p>
+
+        <p>Create your profile.</p>
+
+        <p>Buy 5 players with the virtual currency of $1000 from the current AFL season.</p>
+
+        <p>Select your STAR player. His performance will fetch you double points.</p>
+
+        <p>Follow the matches through the weekend.</p>
+
+        <p>See your rank on the leaderboard every Monday.</p>
+
+        <p>You can also swap one player each week.</p>
+    </div>
+</div>
+
+<div class="parallax2"></div>
+<div class="bodyContainer" id="whatg">
+    <div >
+        <h1>What do I get?</h1>
+        <p>End of the season the top three kids on the leaderboard will get AFL merchandise and free match tickets for
+            the AFL grand final and chance to meet their favorite player.</p>
+
+        <p>Further top 10 kids on the leaderboard get a free training session from the official AFL training squad!</p>
+
+    </div>
+</div>
+
+<div class="parallax2"></div>
+
+
+
+        <div class="bodyContainer"id="whatA">
+
+            <div>
+                <h1>What is the AFL?</h1>
+                <p>It's Australias biggest sport and it's home grown!</p>
+                <p>It's home grown down under!</p>
+
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/XMZYZcoAcU0?rel=0" frameborder="0"
+                        allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+
+            </div>
+
+        </div>
+
+
+
+
+
+
+<div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body mx-3">
+                <form class="/login_user" method="post" action="index.html" id="loginForm">
+
+
+                    <div class="md-form mb-5">
+                        <div id="errorMessage" style="color:red; display:none">
+
+                        </div>
+
+                        <i class="fa fa-envelope prefix grey-text"></i>
+                        <input type="email" id="defaultForm-email" name="email" class="form-control validate"
+                               placeholder="Your Email">
+
+                    </div>
+
+                    <div class="md-form mb-4">
+                        <i class="fa fa-lock prefix grey-text"></i>
+                        <input type="password" id="defaultForm-pass2" name="password" class="form-control validate"
+                               placeholder="Your Password">
+
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button class="btn btn-default">Login</button>
+                        <button class="btn btn-default" data-dismiss="modal" data-toggle="modal"
+                                data-target="#exampleModal">Register
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="max-height: 500px; overflow-y: scroll">
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body mx-3">
+                <form class="/login_user" method="post" action="index.html" id="signupform">
+
+
+                    <div class="md-form mb-5">
+                        <div id="errorMessage" style="color:red; display:none">
+
+                        </div>
+
+                        <i class="fa fa-envelope prefix grey-text"></i>
+                        <input type="email" id="defaultForm-email2" class="form-control validate" name="email"
+                               placeholder="Your Email">
+
+                    </div>
+
+                    <div class="md-form mb-4">
+                        <i class="fa fa-lock prefix grey-text"></i>
+                        <input type="password" id="defaultForm-pass" class="form-control validate" name="password"
+                               placeholder="Your Password">
+
+                    </div>
+                    <div class="md-form mb-4">
+                        <i class="fa fa-lock prefix grey-text"></i>
+                        <input type="password" id="defaultForm-pass1" class="form-control validate" name="cpass"
+                               placeholder="Confirm Password">
+
+                    </div>
+
+                    <div class="md-form mb-4">
+                        <i class="fa fa-user"></i>
+                        <input type="text" class="form-control validate" name="uname" placeholder="Username">
+
+                    </div>
+
+                    <div class="md-form mb-4">
+                        <i class="fa fa-users"></i>
+                        <input type="text" class="form-control validate" name ="tname"placeholder="Team name">
+
+                    </div>
+
+                    <div class="md-form mb-4">
+                        <i class="fa fa-birthday-cake grey-text"></i>
+                        <input type="text" id="datepicker" class="form-control validate" name="bday"
+                               placeholder="Birthday">
+
+                    </div>
+
+                    <div class="dropdown">
+
+                        <select class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                        </select>
+
+
+                    </div>
+                    <br>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button class="btn btn-default" data-dismiss="modal" data-toggle="modal"
+                                data-target="#modalLoginForm">Login
+                        </button>
+                        <button class="btn btn-default">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+</body>
+
+
+<!--===============================================================================================-->
+<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+
+<!--===============================================================================================-->
+<script src="vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+<script src="vendor/bootstrap/js/popper.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+<script src="js/main.js"></script>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+
+</html>
