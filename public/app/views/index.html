@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/">
+    <title>KFL</title>
+    <meta property="og:url" content="https://www.your-domain.com/your-page.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Your Website Title" />
+    <meta property="og:description" content="Your description" />
+    <meta property="og:image" content="https://www.your-domain.com/path/image.jpg" />
+
+    <link rel="icon" href="images//Kfl-1.png" width="50" height="50" type="image/ico" />
+
+  
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Bootstrap-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!--AngularJS-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+    <!--Angular Script created-->
+    <script src="app/controllers/viewController.js"></script>
+
+
+
+
+
+</head>
+
+<body ng-app="indexApp" ng-controller="HeaderController" data-spy="scroll" data-target=".navbar" data-offset="50">
+
+
+
+    <!-- The navbar - The <a> elements are used to jump to a section in the scrollable area -->
+    <nav class="navbar navbar-expand-sm bg-light navbar-light fixed-top">
+        <div class="container-fluid">
+
+            <a class="navbar-brand" href="#">
+                <img src="images/Kflcut.png" width="50" height="50" alt="">
+                <img src="images/players/David Mundy.jpeg" width="50" height="50" alt="">
+                <img src="images/players/Joel Selwood.jpeg" width="50" height="50" alt="">
+                <img src="images/players/Luke Davies.jpeg" width="50" height="50" alt="">
+                <img src="images/players/Mitch Brown.jpeg" width="50" height="50" alt="">
+                <img src="images/players/Rookie Mark.jpeg" width="50" height="50" alt="">
+
+            </a>
+            <div class="collapse navbar-collapse" id="myNavbar" resize>
+                <ul class="nav navbar-nav" id="teamLogo">
+                    <li><a href="/Home">Home</a></li>
+                    <li><a href="/TeamAgainst">Team Against</a></li>
+
+
+
+
+
+                    <li class="text-center"><a href="#what">What is KFL</a></li>
+
+                    <li class="text-center"><a href="#how">How do I play?</a></li>
+
+                    <li class="text-center"><a href="#whatg">What do I get?</a></li>
+
+                    <li class="text-center"><a href="#whatA">What is the AFL?</a></li>
+                    <ul class="nav navbar-nav navbar-right mr-auto">
+                        <li class="dropdown" ng-show="showCardToAddToCollection">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-bell"></span>
+                                My Cards
+                                <span class="caret"></span></a>
+                            <ul class="dropdown-menu" ng-repeat="card in cards">
+                                <li ng-click="AddToMyCollection()">{{card}}</li>
+
+                            </ul>
+                        </li>
+                        <li class="dropdown" ng-show="authenticated">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{UserName| uppercase}}
+                                   </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/myProfile">My Profile</a></li>
+                                    <li><a href="/myCollection">My Collection</a></li>
+                                </ul>
+                            </li>
+
+                        <li><a href="/register" ng-hide="authenticated"><span class="glyphicon glyphicon-user"></span>
+                                Sign
+                                Up</a></li>
+                        <li><a href="/login" ng-hide="authenticated"><span class="glyphicon glyphicon-log-in"></span>
+                                Login</a></li>
+                        <li><a href='' ng-click="logout()" ng-show="authenticated"><span class="glyphicon glyphicon-log-out"></span>
+                                Logout</a>
+                        </li>
+                    </ul>
+
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+   
+
+    <div class="container">
+        <div ng-view>
+            
+        </div>
+    </div>
+
+
+</body>
+
+</html>
