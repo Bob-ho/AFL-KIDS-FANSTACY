@@ -1,45 +1,45 @@
 var app = angular.module("indexApp", ['ngRoute']);
 app.controller('HeaderController', function ($scope, $window, $location, $window, $rootScope, $http) {
- //When the route change, this function will call
- $rootScope.$on('$routeChangeStart', function () {
-    //console.log("Get token" +$window.localStorage.getItem("token"));
-    //Get token
-   
-    if ($window.localStorage.getItem("token")) {
-        $scope.authenticated = true;
-        $scope.UserName = $window.localStorage.getItem("username");
-        $window.localStorage.getItem("token");
+    //When the route change, this function will call
+    $rootScope.$on('$routeChangeStart', function () {
+        //console.log("Get token" +$window.localStorage.getItem("token"));
+        //Get token
 
-        console.log("user login");
-    }
-    
-    else {
+        if ($window.localStorage.getItem("token")) {
+            $scope.authenticated = true;
+            $scope.UserName = $window.localStorage.getItem("username");
+            $window.localStorage.getItem("token");
+
+            console.log("user login");
+        }
+
+        else {
+            $scope.authenticated = false;
+            console.log("user is not login");
+        }
+
+        if ($window.localStorage.getItem("playerID")) {
+            $scope.showCardToAddToCollection = true;
+            var array = [];
+            array.push($window.localStorage.getItem("playerName"));
+            $scope.cards = array;
+
+            console.log("card" + $scope.cards);
+        } else {
+            console.log("NO");
+            $scope.showCardToAddToCollection = false;
+
+        }
+
+    });
+    //Logout function when the user click to the logout button
+    $scope.logout = function () {
+        console.log("user logout");
         $scope.authenticated = false;
-        console.log("user is not login");
-    }
-
-    if ($window.localStorage.getItem("playerID")) {
-        $scope.showCardToAddToCollection = true;
-        var array = [];
-        array.push($window.localStorage.getItem("playerName"));
-        $scope.cards = array;
-
-        console.log("card" + $scope.cards);
-    } else {
-        console.log("NO");
-        $scope.showCardToAddToCollection = false;
-
-    }
-
-});
-  //Logout function when the user click to the logout button
-  $scope.logout = function () {
-    console.log("user logout");
-    $scope.authenticated = false;
-    $window.localStorage.removeItem("token");
-    $window.localStorage.removeItem("username");
-    $location.path('/Home');
-};
+        $window.localStorage.removeItem("token");
+        $window.localStorage.removeItem("username");
+        $location.path('/Home');
+    };
 
 });
 //******User Login*****/
@@ -100,27 +100,76 @@ app.controller('registerController', function ($scope, $http, $location) {
 });
 
 //my Account controller
-app.controller('myProfileCtr', function ($scope, $routeParams, $http) {
+app.controller('myProfileCtr', function ($scope, $window, $routeParams, $http) {
     console.log("Profile controller");
     $scope.Display = true;
-    //Draft player click
-    $scope.draftPlayer = function () {
-        console.log("hello draftPlayer");
-        $scope.Display = true;
-        //if it is the new user
+    var PlayerPools = [];
+    var PlayerSelected = [];
+    //Get the player detail which given the _id to retrived data from the database
+    $http({
+        method: "post",
+        url: "/ViewPlayerPool",
+        //data: { "username": $window.localStorage.getItem("username") }
+    }).then(function mySuccess(response) {
+        if (response.data.success) {
+            var res = response.data.collections;
+            console.log(res);
+            PlayerPools = response.data.collections;
+            $scope.playerPools = PlayerPools;
+        }
+        else {
+            console.log(response.data.result);
+        }
+    });
+    
+    $scope.SelectPlayerFromTheTeam = function (id, image, playerName) {
+        // Remove element on the left hand side when the user select the player.
+        for(var i = 0; i < PlayerPools.length; i++) {
+            if(PlayerPools[i]._id == id) {
+                //Add to player select
+                PlayerSelected.push(PlayerPools[i]);
+                 //Remove from player pool
+                PlayerPools.splice(i, 1);
+            }
+        } 
+        $scope.playerSelected = PlayerSelected;
+
+    }
+    $scope.ReturnPlayerFromTheSelectedTeam = function (id, image, playerName) {
         
-    };
-    //leaderboard click
+        // Remove element on the left hand side when the user select the player.
+        for(var i = 0; i < PlayerSelected.length; i++) {
+            if(PlayerSelected[i]._id == id) {
+                //Add to player select
+                PlayerPools.push(PlayerSelected[i]);
+                 //Remove from player pool
+                 PlayerSelected.splice(i, 1);
+            }
+        } 
+        $scope.collections = PlayerPools;
+
+    }
+    //leaderboard Display
     $scope.leaderboard = function () {
         console.log("hello leaderboard");
         $scope.Display = false;
     };
-    $scope.chooseYourTeam =  function(){
+    //Choose the team display
+    $scope.chooseYourTeam = function () {
         console.log("chooseYourTeam");
-        if(true)
+        $scope.Display = true;
+    }
+    $scope.SaveTeamSelected = function () {
+        console.log("Save team");
+        console.log($scope.teamName);
+        if(PlayerSelected.length == 0)
         {
-            $scope.newUser = true;
+            $scope.errMessage = "Please select your team";
         }
+        if ($scope.teamName === undefined || $scope.teamName === null) {
+            $scope.errMessage = "Please type your team name"; 
+       }
+    
     }
 
 });
@@ -141,7 +190,7 @@ app.config(function ($routeProvider, $locationProvider) {
             templateUrl: "app/views/page/login.html",
             controller: 'loginController'
         })
-       
+
         .when("/myProfile", {
             templateUrl: "app/views/page/myProfile.html",
             controller: 'myProfileCtr'

@@ -22,8 +22,24 @@ module.exports = function (router) {
             }
         });
     });
-  
-    //*****View To My Collection */
+
+    //*****View Player pool */
+    router.post('/ViewPlayerPool', function (req, res) {
+        //Look at the Player DB 
+        Player.find({}).exec(function (err, result) {
+            if(err){
+                console.log(err);
+            }else{
+                console.log(result);
+            res.json({ success: true, collections: result });
+
+            }
+        });
+
+    });
+
+
+    //*****View User team */
     router.post('/ViewMyCollection', function (req, res) {
         var username = req.body.username;
         var array = [];
@@ -66,13 +82,6 @@ module.exports = function (router) {
         var player = new Player();
         player.imageLink = req.body.imageLink;
         player.playerName = req.body.playerName;
-        player.Position = req.body.Position;
-        player.Height = req.body.Height;
-        player.Weight = req.body.Weight;
-        player.DOB = req.body.DOB;
-        player.Debut = req.body.Debut;
-        player.Games = req.body.Games;
-        player.Goals = req.body.Goals;
         player.point = req.body.point;
         console.log(player);
 
@@ -81,9 +90,9 @@ module.exports = function (router) {
                 res.json({ success: false, message: 'Unable to save to the database', m: err });
                 return;
             }
-            
+
             res.json({ success: true, message: 'Player created!' });
-            
+
         });
     });
 
