@@ -100,7 +100,7 @@
                 $('#errorMessage').show();
                 }
                 else {
-                    window.location.assign('/profile');
+                    window.location.assign('/home');
                 }
             }
         });
@@ -121,7 +121,28 @@
                         $('#errorMessageSignup').show();
                     }
                     else {
-                        window.location.assign('/profile');
+                        window.location.assign('/home');
+                    }
+                }
+            });
+        });
+    })(jQuery);
+
+    (function ($) {
+        $('#addPlayerform').submit(function(e){
+
+            e.preventDefault();
+            $.ajax({
+                url: "/sign_up",
+                type: 'POST',
+                data : $('#addPlayerform').serialize(),
+                success: function(res){
+                    if(res.message){
+                        $('#errorMessageSignup').text(res.message);
+                        $('#errorMessageSignup').show();
+                    }
+                    else {
+                        window.location.assign('/addPlayers');
                     }
                 }
             });

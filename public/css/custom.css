@@ -4,11 +4,12 @@ body {
 }
 #wrapper {
   width: 100%;
+  
 }
 #page-wrapper {
   padding: 0 15px;
   min-height: 568px;
-  background-color: white;
+  
 }
 @media (min-width: 768px) {
   #page-wrapper {
@@ -18,9 +19,13 @@ body {
     border-left: 1px solid #e7e7e7;
   }
 }
+.navbar-default .sidebar {
+  margin-top:7%;
+}
 .sidebar .sidebar-nav.navbar-collapse {
   padding-left: 0;
   padding-right: 0;
+  
 }
 .sidebar ul li {
   border-bottom: 1px solid #e7e7e7;
