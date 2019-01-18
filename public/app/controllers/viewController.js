@@ -1,4 +1,25 @@
 var app = angular.module("indexApp", ['ngRoute']);
+var Teams =
+    [
+        { type: "Adelaide" },
+        { type: "Brisbane" },
+        { type: "Carlton" },
+        { type: "Collingwood" },
+        { type: "Fremantle" },
+        { type: "Geelong" },
+        { type: "Gold Coast" },
+        { type: "Greater Western Sydney" },
+        { type: "Hawthorn" },
+        { type: "Melbourne" },
+        { type: "North Melbourne" },
+        { type: "Port Adelaide" },
+        { type: "Richmond" },
+        { type: "St Kilda" },
+        { type: "Sydney" },
+        { type: "West Coast" },
+        { type: "Western Bulldogs" },
+    ];
+
 app.controller('HeaderController', function ($scope, $window, $location, $window, $rootScope, $http) {
     //When the route change, this function will call
     $rootScope.$on('$routeChangeStart', function () {
@@ -104,6 +125,7 @@ app.controller('registerController', function ($scope, $http, $location) {
 //my Account controller
 app.controller('myProfileCtr', function ($scope, $window, $http) {
     console.log("Profile controller");
+    $scope.teams = Teams;
     //Set view
     $scope.MyTeamDisplay = false;
     $scope.DraftTeamDisplay = false;
