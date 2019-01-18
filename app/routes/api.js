@@ -93,7 +93,7 @@ module.exports = function (router) {
     });
     //*****View All User Point */
     router.post('/Leaderboard', function (req, res) {
-        User.find({}).sort('-Point').exec(function (err, result) {
+        User.find({ Point: { $gt: 0}}).sort('-Point').exec(function (err, result) {
             if (err) {
                 console.log(err);
             } else {
@@ -105,9 +105,11 @@ module.exports = function (router) {
     });
     //*****View User team */
     router.post('/ViewMyTeam', function (req, res) {
+
         var userId = req.body.userId;
+        console.log("ViewMyteam" +userId)
         var array = [];
-        Team.find({ userID: userId }).select("playerID userID").exec(function (err, result) {
+        Team.find({ userID: userId }).select("playerID").exec(function (err, result) {
             console.log(result);
             result.forEach(function (item) {
                 //Look at the Player DB 

@@ -153,8 +153,8 @@
                             <a href="#" ng-click="ViewMyTeam()"><i class="fa fa-table fa-fw"></i>View My Team</a>
                         </li>
                         <li>
-                                <a href="#" ng-click="ViewMyTeam()"><i class="fa fa-table fa-fw"></i>Gain points</a>
-                            </li>
+                            <a href="#" ng-click="ViewMyTeam()"><i class="fa fa-table fa-fw"></i>Gain points</a>
+                        </li>
                         <li class="custom-points">
                             <span>Points: {{point}}</span>
                         </li>
@@ -182,23 +182,29 @@
         <div id="page-wrapper" ng-show="DraftTeamDisplay">
             <div class="row">
                 <div class="col-lg-12">
-                </div>
-            </div><br />
 
-            <div class="row">
-                <div class="col-lg-12">
                     <div id="dvSource" class="connected-sortable droppable-area1">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4 custom-points text-center">
+                            <form class="form-inline center">
+                                <select class="col-sm-12" ng-model="Search.TeamA">
+                                    <option value="">Select Team</option>
+                                    <option ng-repeat="team in teams" value="{{team.type}}">{{team.type}}</option>
+                                </select>
+                            </form>
+                        </div>
+                        <div class="col-sm-4"></div>
                         <ul class="col-md-12">
-                            <li class="thumbnail col-md-2" ng-repeat="row in playerPools" >
+                            <li class="thumbnail col-md-2" ng-repeat="row in playerPools">
 
                                 <div ng-click="SelectPlayerFromTheTeam(row._id, row.imageLink, row.playerName)">
                                     <img draggable="true" ng-src="{{row.imageLink}}">
                                 </div>
                                 <div class="font-weight-bold text-danger">
-                                        {{row.playerName}}
+                                    {{row.playerName}}
                                 </div>
 
-                                
+
 
                             </li>
                         </ul>
@@ -206,10 +212,12 @@
                 </div>
                 <div class="col-lg-12">
                     <div id="dvDest" class="connected-sortable droppable-area2">
-                        <div class="col-sm-12 custom-points">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4 custom-points">
                             <input type="text" class="form-control text-center" placeholder="Enter your team name" name="teamName"
                                 ng-model="teamName">
                         </div>
+                        <div class="col-sm-4"></div>
                         <div class="clearfix"></div>
                         <ul class="list-group">
                             <li class="thumbnail" ng-repeat="row in playerSelected">
