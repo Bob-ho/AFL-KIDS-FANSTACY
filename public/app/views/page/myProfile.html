@@ -7,6 +7,17 @@
     <script src="js/bootstrap.min.js"></script>
 
     <style>
+        table, th , td  {
+        border: 1px solid grey;
+        border-collapse: collapse;
+        padding: 5px;
+        }
+        table tr:nth-child(odd) {
+        background-color: #f1f1f1;
+        }
+        table tr:nth-child(even) {
+        background-color: #ffffff;
+        }
 
         #wrapper {
             width: 100%;
@@ -91,6 +102,10 @@
             padding: 0px;
             border: none;
         }
+        .thumbnail{ 
+            display: inline-block;
+            width: 20%;
+        }
     </style>
 </head>
 
@@ -123,7 +138,7 @@
                     <!-- SIDEBAR USER TITLE -->
                     <div class="profile-usertitle">
                         <div class="profile-usertitle-name">
-                            <a href="/profile"> {{UserName|uppercase}} </a>
+                            <a href="/profile"> {{teamName|uppercase}} </a>
                         </div>
                     </div>
                     <ul class="nav" id="side-menu">
@@ -132,68 +147,78 @@
                             <a href="#" ng-click="leaderboard()"><i class="fa fa-dashboard fa-fw"></i> Leaderboard</a>
                         </li>
                         <li>
-                            <a href="#" ng-click="chooseYourTeam()"><i class="fa fa-table fa-fw"></i> Choose Your Team</a>
+                            <a href="#" ng-click="DraftTeam()"><i class="fa fa-table fa-fw"></i> Draft Team</a>
                         </li>
-
+                        <li>
+                            <a href="#" ng-click="ViewMyTeam()"><i class="fa fa-table fa-fw"></i>View My Team</a>
+                        </li>
+                        <li>
+                                <a href="#" ng-click="ViewMyTeam()"><i class="fa fa-table fa-fw"></i>Gain points</a>
+                            </li>
                         <li class="custom-points">
-                            <span>Points: 6566</span>
-                        </li>
-                        <li class="custom-game">
-                            <span>Gems: 100</span>
+                            <span>Points: {{point}}</span>
                         </li>
 
                     </ul>
                 </div>
             </div>
         </nav>
+        <!-- View My team -->
+        <div id="page-wrapper" ng-show="MyTeamDisplay">
+            <div class="row">
+                <ul class="col-md-12">
+                    <div id="dvSource" class="connected-sortable droppable-area1">
+                        <li class="thumbnail" ng-repeat="row in viewTeam">
+                            <div>
+                                <img draggable="true" ng-src="{{row.imageLink}}" height="50" width="100%" ondragstart="drag(row.playerName)">
+                                <a href="#" class="font-weight-bold text-danger"> {{row.playerName}}</a>
+                            </div>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+        </div>
         <!-- choose the team -->
-        <div id="page-wrapper" ng-show="Display">
+        <div id="page-wrapper" ng-show="DraftTeamDisplay">
             <div class="row">
                 <div class="col-lg-12">
                 </div>
-                <!-- /.col-lg-12 -->
             </div><br />
 
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                     <div id="dvSource" class="connected-sortable droppable-area1">
-                        <ul class="list-group" ng-repeat="row in playerPools">
+                        <ul class="col-md-12">
+                            <li class="thumbnail col-md-2" ng-repeat="row in playerPools" >
 
-                            <li class=" col-sm-12 list-group-item" ng-click="SelectPlayerFromTheTeam(row._id, row.imageLink, row.playerName)">
-                                <div>
-                                    <div>
-                                        <img draggable="true" ng-src="{{row.imageLink}}" height="50" width="100%"
-                                            ondragstart="drag(row.playerName)">
-                                        <a href="#" class="font-weight-bold text-danger"> {{row.playerName}}</a>
-                                    </div>
+                                <div ng-click="SelectPlayerFromTheTeam(row._id, row.imageLink, row.playerName)">
+                                    <img draggable="true" ng-src="{{row.imageLink}}">
                                 </div>
+                                <div class="font-weight-bold text-danger">
+                                        {{row.playerName}}
+                                </div>
+
+                                
+
                             </li>
-
                         </ul>
-
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                     <div id="dvDest" class="connected-sortable droppable-area2">
                         <div class="col-sm-12 custom-points">
-                            <input type="text" class="form-control text-center" placeholder="Enter your team name" name="teamName" ng-model="teamName">
+                            <input type="text" class="form-control text-center" placeholder="Enter your team name" name="teamName"
+                                ng-model="teamName">
                         </div>
                         <div class="clearfix"></div>
-                        <ul class="list-group" ng-repeat="row in playerSelected">
-
-                            <li class=" col-sm-12 list-group-item" ng-click="ReturnPlayerFromTheSelectedTeam(row._id, row.imageLink)">
-                                <div>
-                                    <div>
-                                        <img draggable="true" ng-src="{{row.imageLink}}" height="50" width="100%"
-                                            ondragstart="drag(row.playerName)">
-                                        <a href="#" class="font-weight-bold text-danger"> {{row.playerName}}</a>
-                                    </div>
+                        <ul class="list-group">
+                            <li class="thumbnail" ng-repeat="row in playerSelected">
+                                <div ng-click="ReturnPlayerFromTheSelectedTeam(row._id, row.imageLink)">
+                                    <img draggable="true" ng-src="{{row.imageLink}}">
+                                    <a href="#" class="font-weight-bold text-danger"> {{row.playerName}}</a>
                                 </div>
                             </li>
-
                         </ul>
-
-
                     </div>
                     <br />
                     <button type="submit" class="btn btn-primary pull-right" ng-click="SaveTeamSelected()" data-toggle="modal"
@@ -204,55 +229,30 @@
             </div>
         </div>
         <!-- Leaderboard -->
-        <div id="page-wrapper" ng-hide="Display">
+        <div id="page-wrapper" ng-show="LeaderBoarDisplay">
             <div class="row">
                 <div class="col-lg-12">
                     <h3 class="page-header text-center">Leaderboards</h3>
-
                 </div>
-                <!-- /.col-lg-12 -->
             </div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Rank</th>
+                        <th scope="col">Team Name</th>
+                        <th scope="col">Point</th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="row in ResultLeaderboard">
+                    <tr>
+                        <th scope="row">{{ $index + 1 }}</th>
+                        <td>{{row.TeamName}}</td>
+                        <td>{{row.Point}}</td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <div class="row borads">
-                <div class="col-lg-4">
-                    <h3>Rank</h3>
-                </div>
-                <div class="col-lg-4">
-                    <h3>Team Name</h3>
-                </div>
-                <div class="col-lg-4">
-                    <h3>Points</h3>
-                </div>
 
-                <div class="col-lg-4">
-                    <h3>1</h3>
-                </div>
-                <div class="col-lg-4">
-                    <h3>Amazers</h3>
-                </div>
-                <div class="col-lg-4">
-                    <h3>100000000</h3>
-                </div>
-                <div class="col-lg-4">
-                    <h3>2</h3>
-                </div>
-                <div class="col-lg-4">
-                    <h3>Invinciles</h3>
-                </div>
-                <div class="col-lg-4">
-                    <h3>1400000</h3>
-                </div>
-                <div class="col-lg-4">
-                    <h3>3</h3>
-                </div>
-                <div class="col-lg-4">
-                    <h3>Monas Team</h3>
-                </div>
-                <div class="col-lg-4">
-                    <h3>1200000</h3>
-                </div>
-                <div class="clearfix"></div>
-            </div>
 
 
         </div>
