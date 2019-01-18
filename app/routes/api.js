@@ -1,25 +1,63 @@
 //Import the User model
 var User = require("../models/user");
 var Player = require("../models/player");
-var Collection = require("../models/collection");
+var Team = require("../models/team");
 var jwt = require('jsonwebtoken');
 var aflSecrete = "IamVerySecreteWhereYoucouldnotFineMe";
 module.exports = function (router) {
-
-    //*****Add To My Collection */
-    router.post('/AddToMyCollection', function (req, res) {
-
-        var collection = new Collection();
-        collection.playerID = req.body.playerID;
-        collection.username = req.body.username;
-        collection.save(function (err) {
+    //*****Check team name, it is only allow unique team name*/
+    router.post('/GetMyPoint', function (req, res) {
+        console.log("Get point" + req.body.userId);
+        //Look at the Player DB 
+        User.findOne({ _id: req.body.userId }).select("Point TeamName").exec(function (err, result) {
             if (err) {
-                res.json({ success: false, message: 'Unable to save to the database', m: err });
-                return;
+                console.log(err);
+            } else {
+                console.log("result" + result);
+                res.json({ success: true, point: result.Point, teamName: result.TeamName });
+
             }
-            else {
-                res.json({ success: true, message: 'Add created!' });
+        });
+
+
+    });
+    //*****Add To My Collection */
+    router.post('/AddToMyTeam', function (req, res) {
+        console.log("Add to my team");
+        console.log(req.body.id);
+        console.log(req.body.point);
+        User.findByIdAndUpdate(req.body.id, { $set: { TeamName: req.body.teamName, Point: req.body.point } }, { new: true }, function (err, update) {
+            if (err) {
+                console.log("Team name has already existed");
+                res.json({ success: false, message: 'Team name has already existed' });
+            } else {
+                Team.deleteMany({ userID: req.body.id }, function (err) {
+                    if (err) {
+                        console.log(err);
+                        res.json({ success: false, message: err });
+                    }
+                    else {
+                        console.log("Deleted the team that match the player");
+                        for (var i = 0; i < req.body.player.length; i++) {
+                            console.log(req.body.player[i]);
+                            var team = new Team();
+                            team.playerID = req.body.player[i];
+                            team.userID = req.body.id;
+                            team.save(function (err) {
+                                if (err) {
+                                    console.log(err);
+                                }
+                            });
+                        }
+                        setTimeout(function () {
+                            res.json({ success: true });
+                        }, 1000);
+
+                    }
+
+                });
             }
+
         });
     });
 
@@ -27,33 +65,60 @@ module.exports = function (router) {
     router.post('/ViewPlayerPool', function (req, res) {
         //Look at the Player DB 
         Player.find({}).exec(function (err, result) {
-            if(err){
+            if (err) {
                 console.log(err);
-            }else{
-                console.log(result);
-            res.json({ success: true, collections: result });
+            } else {
+
+                res.json({ success: true, collections: result });
 
             }
         });
 
     });
+    //*****View Player by ID */
+    router.post('/ViewPlayerID', function (req, res) {
+        var playerId = req.body.player;
+        console.log(playerId);
+        //Look at the Player DB 
+        Player.find({ _id: playerId }).exec(function (err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(result);
+                res.json({ success: true, collections: result });
 
+            }
+        });
 
+    });
+    //*****View All User Point */
+    router.post('/Leaderboard', function (req, res) {
+        User.find({}).sort('-Point').exec(function (err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(result);
+                res.json({ success: true, result: result });
+            }
+        });
+
+    });
     //*****View User team */
-    router.post('/ViewMyCollection', function (req, res) {
-        var username = req.body.username;
+    router.post('/ViewMyTeam', function (req, res) {
+        var userId = req.body.userId;
         var array = [];
-
-        Collection.find({ username: username }).select("playerID").exec(function (err, result) {
+        Team.find({ userID: userId }).select("playerID userID").exec(function (err, result) {
+            console.log(result);
             result.forEach(function (item) {
                 //Look at the Player DB 
                 Player.findOne({ _id: item.playerID }).exec(function (err, inresult) {
-                    //console.log(inresult)
+                    console.log(inresult)
                     //Add to the Player collectoin
                     array.push(inresult);
                 });
             });
             setTimeout(function () {
+                console.log(array);
                 res.json({ success: true, collections: array });
             }, 1000);
 
@@ -109,7 +174,7 @@ module.exports = function (router) {
         }
         else {
             //look at the database to get the username, password and email base on the username
-            User.findOne({ username: req.body.username }).select("username password email").exec(function (err, result) {
+            User.findOne({ username: req.body.username }).select("_id username password email").exec(function (err, result) {
                 if (err) {
                     throw err;
                 }
@@ -124,7 +189,7 @@ module.exports = function (router) {
                     else {
                         //generate the token
                         var token = jwt.sign({ _id: result._id, username: result.username, email: result.email }, aflSecrete, { expiresIn: '2h' });
-                        res.json({ success: true, message: "User authenticated", token: token, username: result.username });
+                        res.json({ success: true, message: "User authenticated", id: result._id, token: token, username: result.username });
 
                     }
                 }
@@ -158,7 +223,7 @@ module.exports = function (router) {
         //Save to the database
         user.save(function (err) {
             if (err) {
-                res.json({ success: false, message: 'User name or Email already exist' });
+                res.json({ success: false, message: err });
                 return;
             }
             else {

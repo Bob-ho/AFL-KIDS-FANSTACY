@@ -61,8 +61,10 @@ app.controller('loginController', function ($scope, $http, $location, $window) {
                 //set token to local storage
                 $window.localStorage.setItem("token", response.data.token);
                 $window.localStorage.setItem("username", response.data.username);
+                $window.localStorage.setItem("id", response.data.id);
                 console.log(response.data.username);
                 console.log(response.data.token);
+                console.log("id" + response.data.id);
                 //set the error meassage
                 $scope.successMsg = response.data.message;
                 $location.path("/Home");
@@ -100,77 +102,180 @@ app.controller('registerController', function ($scope, $http, $location) {
 });
 
 //my Account controller
-app.controller('myProfileCtr', function ($scope, $window, $routeParams, $http) {
+app.controller('myProfileCtr', function ($scope, $window, $http) {
     console.log("Profile controller");
-    $scope.Display = true;
+    //Set view
+    $scope.MyTeamDisplay = false;
+    $scope.DraftTeamDisplay = false;
+    $scope.LeaderBoarDisplay = true;
     var PlayerPools = [];
     var PlayerSelected = [];
-    //Get the player detail which given the _id to retrived data from the database
-    $http({
-        method: "post",
-        url: "/ViewPlayerPool",
-        //data: { "username": $window.localStorage.getItem("username") }
-    }).then(function mySuccess(response) {
-        if (response.data.success) {
-            var res = response.data.collections;
-            console.log(res);
-            PlayerPools = response.data.collections;
-            $scope.playerPools = PlayerPools;
-        }
-        else {
-            console.log(response.data.result);
-        }
-    });
-    
+    FunctionPoint();
+    FunctionLeaderBoard();
+    function FunctionPoint() {
+        $http({
+            method: "post",
+            url: "/GetMyPoint",
+            data: { "userId": $window.localStorage.getItem("id") }
+        }).then(function mySuccess(response) {
+            if (response.data.success) {
+                var res = response.data.point;
+                console.log(res);
+                $scope.point = res;
+                $scope.teamName = response.data.teamName;
+            }
+            else {
+                console.log(response.data);
+            }
+        });
+    }
+    function FunctionLeaderBoard() {
+        $scope.MyTeamDisplay = false;
+        $scope.DraftTeamDisplay = false;
+        $scope.LeaderBoarDisplay = true;
+        $http({
+            method: "post",
+            url: "/Leaderboard"
+        }).then(function mySuccess(response) {
+            if (response.data.success) {
+                var res = response.data.result;
+                $scope.ResultLeaderboard = res;
+                console.log(res);
+            }
+            else {
+                console.log(response.data);
+            }
+        });
+    }
+    function FunctionViewMyTeam() {
+        $scope.MyTeamDisplay = true;
+        $scope.DraftTeamDisplay = false;
+        $scope.LeaderBoarDisplay = false;
+        console.log("ViewMyTeam");
+        //Get the player detail which given the _id to retrived data from the database
+        $http({
+            method: "post",
+            url: "/ViewMyTeam",
+            data: { "userId": $window.localStorage.getItem("id") }
+        }).then(function mySuccess(response) {
+            if (response.data.success) {
+                var res = response.data.collections;
+                console.log(res);
+                //$scope.team = response.data.team;
+                $scope.viewTeam = response.data.collections;
+            }
+            else {
+                console.log(response.data.result);
+            }
+        });
+    }
+    //leaderboard Display
+    $scope.leaderboard = function () {
+        FunctionLeaderBoard();
+    };
+    //Choose the team Draft
+    $scope.DraftTeam = function () {
+        PlayerSelected = [];
+        $scope.playerSelected = [];
+        $scope.MyTeamDisplay = false;
+        $scope.DraftTeamDisplay = true;
+        $scope.LeaderBoarDisplay = false;
+        //Get the player detail which given the _id to retrived data from the database
+        $http({
+            method: "post",
+            url: "/ViewPlayerPool"
+            //data: { "username": $window.localStorage.getItem("username") }
+        }).then(function mySuccess(response) {
+            if (response.data.success) {
+                var res = response.data.collections;
+                console.log(res);
+                PlayerPools = response.data.collections;
+                $scope.playerPools = PlayerPools;
+            }
+            else {
+                console.log(response.data.result);
+            }
+        });
+
+    }
+    //View team display
+    $scope.ViewMyTeam = function () {
+        FunctionViewMyTeam();
+    }
+    //Draft player section
     $scope.SelectPlayerFromTheTeam = function (id, image, playerName) {
+        $scope.MyTeamDisplay = false;
+        $scope.DraftTeamDisplay = true;
+        $scope.LeaderBoardisplay = false;
         // Remove element on the left hand side when the user select the player.
-        for(var i = 0; i < PlayerPools.length; i++) {
-            if(PlayerPools[i]._id == id) {
+        for (var i = 0; i < PlayerPools.length; i++) {
+            if (PlayerPools[i]._id == id) {
                 //Add to player select
                 PlayerSelected.push(PlayerPools[i]);
-                 //Remove from player pool
+                //Remove from player pool
                 PlayerPools.splice(i, 1);
             }
-        } 
+        }
         $scope.playerSelected = PlayerSelected;
 
     }
     $scope.ReturnPlayerFromTheSelectedTeam = function (id, image, playerName) {
-        
+        $scope.ViewSelectedTeamDisplay = false;
+        $scope.ChooseTeamDisplay = true;
+        $scope.ViewLeaderBoardisplay = false;
         // Remove element on the left hand side when the user select the player.
-        for(var i = 0; i < PlayerSelected.length; i++) {
-            if(PlayerSelected[i]._id == id) {
+        for (var i = 0; i < PlayerSelected.length; i++) {
+            if (PlayerSelected[i]._id == id) {
                 //Add to player select
                 PlayerPools.push(PlayerSelected[i]);
-                 //Remove from player pool
-                 PlayerSelected.splice(i, 1);
+                //Remove from player pool
+                PlayerSelected.splice(i, 1);
             }
-        } 
+        }
         $scope.collections = PlayerPools;
 
     }
-    //leaderboard Display
-    $scope.leaderboard = function () {
-        console.log("hello leaderboard");
-        $scope.Display = false;
-    };
-    //Choose the team display
-    $scope.chooseYourTeam = function () {
-        console.log("chooseYourTeam");
-        $scope.Display = true;
-    }
     $scope.SaveTeamSelected = function () {
+
         console.log("Save team");
         console.log($scope.teamName);
-        if(PlayerSelected.length == 0)
-        {
-            $scope.errMessage = "Please select your team";
+        if (PlayerSelected.length < 2) {
+            $scope.errMessage = "Please select your team, your team at least 2 players";
         }
-        if ($scope.teamName === undefined || $scope.teamName === null) {
-            $scope.errMessage = "Please type your team name"; 
-       }
-    
+        else if ($scope.teamName === undefined || $scope.teamName === null) {
+            $scope.errMessage = "Please type your team name";
+        }
+        else {
+            console.log("Add to my collection clicked");
+
+            var TotalPoint = 0;
+            PlayerSelected.forEach(element => {
+                TotalPoint += element.point;
+            });
+            console.log("Point" + TotalPoint);
+            //Request the back-end to save it to the database.
+            $http({
+                method: "post",
+                url: "/AddToMyTeam",
+                data: { "player": PlayerSelected, "username": $window.localStorage.getItem("username"), teamName: $scope.teamName, id: $window.localStorage.getItem("id"), point: TotalPoint }
+            }).then(function mySuccess(response) {
+                if (response.data.success) {
+                    console.log(response);
+                    FunctionViewMyTeam();
+
+                }
+                else {
+                    console.log(response);
+                    $scope.errMessage = response.data.message;
+
+                }
+            });
+
+
+
+        }
     }
+    // End Draft player section
 
 });
 //App configuration

@@ -6,6 +6,9 @@ var UserSchema = new Schema({
     username: { type: String, lowercase: true, required: true, unique: true},
     password: { type: String, required: true},
     email: { type: String, required: true, lowercase: true},
+    TeamName: { type: String, required: false, lowercase: true, unique: true},
+    Point: { type: Number, required: false, lowercase: true, default: 0},
+
 });
 UserSchema.pre('save', function(next) {
     var user = this;
