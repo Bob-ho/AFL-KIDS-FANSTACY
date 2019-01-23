@@ -1,0 +1,170 @@
+<html>
+<head>
+    <!-- Custom CSS -->
+    <link href="css/custom.css" rel="stylesheet">
+    <script src="js/bootstrap.min.js"></script>
+
+    <style>
+        table, th , td  {
+        border: 1px solid grey;
+        border-collapse: collapse;
+        padding: 5px;
+        }
+        table tr:nth-child(odd) {
+        background-color: #f1f1f1;
+        }
+        table tr:nth-child(even) {
+        background-color: #ffffff;
+        }
+
+        #wrapper {
+            width: 100%;
+        }
+
+        #page-wrapper {
+            padding: 0 15px;
+            min-height: 568px;
+            background-color: white;
+            background: url("images/profile_bg.jpg") no-repeat;
+            background-size: cover;
+        }
+
+        .profile-userpic img {
+            float: none;
+            margin: 0 auto;
+            width: 100px;
+            height: 100px;
+            -webkit-border-radius: 50% !important;
+            -moz-border-radius: 50% !important;
+            border-radius: 50% !important;
+        }
+
+        .profile-usertitle {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .profile-usertitle-name {
+            color: #5a7391;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+        
+
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            margin: auto;
+            text-align: center;
+            font-family: arial;
+        }
+
+        .title {
+            color: #000;
+            background: #fff;
+            padding: 7px 0px;
+            font-size: 18px;
+        }
+        .page-header {
+            color: #fff;
+        }
+
+         .connected-sortable img {
+            height: 115px;
+            width: 119px;
+            margin: 3px 3px 5px;
+            padding:0;
+        }
+
+        #dvSource, #dvDest{
+            border: 5px solid #ccc;
+            padding: 13px 5px 5px 10px;
+            min-height: 400px;
+        }
+        .custom_mdl_close {
+            position: absolute !important;
+            background: #4acafb !important;
+            right: -9px !important;
+            top: -11px !important;
+            z-index: 1 !important;
+            border-radius: 50px !important;
+            opacity: 1 !important;
+            padding: 4px 8px !important;
+            font-weight: 300 !important;
+            border: 2px solid #fff !important;
+            color: #fff !important;
+        }
+
+        .custom_save_btn .modal-header {
+            padding: 0px;
+            border: none;
+        }
+        .thumbnail{ 
+            display: inline-block;
+            width: 20%;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <!-- /.navbar-header -->
+            <div class="alert alert-danger text-center" ng-show="errMessage">
+                <strong>Warm!</strong> {{errMessage}}
+            </div>
+
+        </nav>
+     
+        <!-- Leaderboard -->
+        <div id="page-wrapper" >
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="page-header text-center">Player</h3>
+                </div>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Number</th>
+                        <th scope="col">{{Header[0]}}</th>
+                        <th scope="col">{{Header[2]}}</th>
+                       
+                    </tr>
+                </thead>
+                <tbody ng-repeat="row in PlayerStatic | startFrom:currentPage*pageSize | limitTo:pageSize" ng-if="$index > 0">
+                        <!-- ng-if="row[2] == 'CA'" -->
+                    <tr>
+                        <td>{{$index }}</td>
+                        <td>{{row[0]}}</td>
+                        <td >{{row[2]}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                    Previous
+                </button>
+                {{currentPage+1}}/{{numberOfPages()}}
+                <button ng-disabled="currentPage >= PlayerStatic.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                    Next
+                </button>
+            </div>
+        </div>
+        <!--End Leaderboard -->
+
+    </div>
+    <!-- /#wrapper -->
+</body>
+
+</html>

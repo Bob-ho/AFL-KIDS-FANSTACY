@@ -57,9 +57,13 @@ if(appEnv.isLocal){
 
 //Detects environment and connects to appropriate DB
 if(appEnv.isLocal){
+    //const url = "mongodb+srv://hominh:HMTmibt10@gettingstarted-uypci.mongodb.net/test?retryWrites=true";
     mongoose.connect(process.env.LOCAL_MONGODB_URL);
+    //mongoose.connect(url);
+
     sessionDB = process.env.LOCAL_MONGODB_URL;
-    console.log('Your MongoDB is running at ' + process.env.LOCAL_MONGODB_URL);
+   console.log('Your MongoDB is running at ' + process.env.LOCAL_MONGODB_URL);
+   //console.log('Your MongoDB is running at ' + url);
 }
 // Connect to MongoDB Service on Bluemix
 else if(!appEnv.isLocal) {
@@ -84,6 +88,16 @@ else if(!appEnv.isLocal) {
 else{
     console.log('Unable to connect to MongoDB.');
 }
+
+// const MongoClient = require('mongodb').MongoClient;
+// const uri = "mongodb+srv://hominh:<HMTmibt10>@gettingstarted-uypci.mongodb.net/test?retryWrites=true";
+// //const uri = "mongodb+srv://kay:myRealPassword@cluster0.mongodb.net/admin";
+// const client = new MongoClient(uri);
+// client.connect(err => {
+//   const collection = client.db("test").collection("devices");
+//  // perform actions on the collection object
+//   client.close();
+// });
 
 app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname + '/public/app/views/index.html'));
