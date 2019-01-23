@@ -1,6 +1,16 @@
 var app = angular.module("indexApp", ['ngRoute']);
+app.filter('startFrom', function () {
+    return function (input, start) {
+        //console.log("input " + input);
+        //console.log("start "+ start);
+        start = +start; //parse to int
+        return input.slice(start);
+    }
+});
+
 var Teams =
     [
+        { type: "Essendon" },
         { type: "Adelaide" },
         { type: "Brisbane" },
         { type: "Carlton" },
@@ -122,11 +132,17 @@ app.controller('registerController', function ($scope, $http, $location) {
     };
 });
 
+app.controller('gainPointsController', function ($scope, $window, $http) {
+    console.log("Gain Point Controller");
+});
+
 //my Account controller
-app.controller('myProfileCtr', function ($scope, $window, $http) {
+app.controller('myProfileCtr', function ($scope, $window, $http, $location) {
     console.log("Profile controller");
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
     $scope.teams = Teams;
-    //Set view
+    //Set view, 
     $scope.MyTeamDisplay = false;
     $scope.DraftTeamDisplay = false;
     $scope.LeaderBoarDisplay = true;
@@ -134,6 +150,23 @@ app.controller('myProfileCtr', function ($scope, $window, $http) {
     var PlayerSelected = [];
     FunctionPoint();
     FunctionLeaderBoard();
+    MyRanking();
+    function MyRanking() {
+        $http({
+            method: "post",
+            url: "/ViewMyCurrentRank",
+            data: { "id": $window.localStorage.getItem("id") }
+        }).then(function mySuccess(response) {
+            if (response.data.success) {
+                var res = response.data.result;
+                $scope.MyRanking = res;
+                console.log(res);
+            }
+            else {
+                console.log(response.data);
+            }
+        });
+    }
     function FunctionPoint() {
         $http({
             method: "post",
@@ -152,6 +185,12 @@ app.controller('myProfileCtr', function ($scope, $window, $http) {
         });
     }
     function FunctionLeaderBoard() {
+
+        $scope.data = [];
+
+
+
+
         $scope.MyTeamDisplay = false;
         $scope.DraftTeamDisplay = false;
         $scope.LeaderBoarDisplay = true;
@@ -162,6 +201,9 @@ app.controller('myProfileCtr', function ($scope, $window, $http) {
             if (response.data.success) {
                 var res = response.data.result;
                 $scope.ResultLeaderboard = res;
+                $scope.numberOfPages = function () {
+                    return Math.ceil($scope.ResultLeaderboard.length / $scope.pageSize);
+                }
                 console.log(res);
             }
             else {
@@ -284,6 +326,7 @@ app.controller('myProfileCtr', function ($scope, $window, $http) {
                 if (response.data.success) {
                     console.log(response);
                     FunctionViewMyTeam();
+                    MyRanking();
 
                 }
                 else {
@@ -298,8 +341,101 @@ app.controller('myProfileCtr', function ($scope, $window, $http) {
         }
     }
     // End Draft player section
+    $scope.GainPoint = function () {
+        $location.path("/GainPoint");
+
+    }
 
 });
+app.controller('PlayerStaticController', function ($scope, $window, $http, $location) {
+    console.log("PlayerStaticController");
+    $scope.currentPage = 0;
+    $scope.pageSize = 15;
+    $http({
+        method: "post",
+        url: "/PlayerStatic"
+    }).then(function mySuccess(response) {
+        if (response.data.success) {
+            var res = response.data.result;
+            $scope.Header = res[0];
+            console.log("Header " + res[0]);
+            
+            res.forEach(element => {
+                //console.log(element[2]);
+                switch (element[2]) {
+                    
+                    case "ES":
+                        element[2] = "Essendon";
+                        break;
+                    case "RI":
+                        element[2] = "Richmond";
+                        break;
+                    case "AD":
+                        element[2] = "Adelaide";
+                        break;
+                    case "BL":
+                        element[2] = "Brisbane";
+                        break;
+                    case "CA":
+                        element[2] = "Carlton";
+                        break;
+                    case "CW":
+                        element[2] = "Collingwood";
+                        break;
+                    case "FR":
+                        element[2] = "Fremantle";
+                        break;
+                    case "GE":
+                        element[2] = "Geelong";
+                        break;
+                    case "GC":
+                        element[2] = "Gold Coast";
+                        break;
+
+                    case "GW":
+                        element[2] = "Greater Western Sydney";
+                        break;
+                    case "HW":
+                        element[2] = "Hawthorn";
+                        break;
+                    case "ME":
+                        element[2] = "Melbourne";
+                        break;
+                    case "NM":
+                        element[2] = "North Melbourne";
+                        break;
+                    case "PA":
+                        element[2] = "Port Adelaide";
+                        break;
+                    case "SK":
+                        element[2] = "St Kilda";
+                        break;
+                    case "SY":
+                        element[2] = "Sydney";
+                        break;
+                    case "WC":
+                        element[2] = "West Coast";
+                        break;
+                    case "WB":
+                        element[2] = "Western Bulldogs";
+                        break;
+                    default:
+                }
+            });
+
+
+            $scope.PlayerStatic = res;
+            $scope.numberOfPages = function () {
+                return Math.ceil($scope.PlayerStatic.length / $scope.pageSize);
+            }
+            //console.log("Team" + res);
+        }
+        else {
+            console.log(response.data);
+        }
+    });
+});
+
 //App configuration
 app.config(function ($routeProvider, $locationProvider) {
     $routeProvider
@@ -316,6 +452,14 @@ app.config(function ($routeProvider, $locationProvider) {
         .when("/login", {
             templateUrl: "app/views/page/login.html",
             controller: 'loginController'
+        })
+        .when("/GainPoint", {
+            templateUrl: "app/views/page/GainPoints.html",
+            controller: 'gainPointsController'
+        })
+        .when("/PlayerStatic", {
+            templateUrl: "app/views/page/PlayerStatic.html",
+            controller: 'PlayerStaticController'
         })
 
         .when("/myProfile", {

@@ -4,6 +4,12 @@ var Player = require("../models/player");
 var Team = require("../models/team");
 var jwt = require('jsonwebtoken');
 var aflSecrete = "IamVerySecreteWhereYoucouldnotFineMe";
+var fs = require('fs');
+var csv = require('fast-csv');
+
+
+
+
 module.exports = function (router) {
     //*****Check team name, it is only allow unique team name*/
     router.post('/GetMyPoint', function (req, res) {
@@ -91,14 +97,72 @@ module.exports = function (router) {
         });
 
     });
-    //*****View All User Point */
-    router.post('/Leaderboard', function (req, res) {
-        User.find({ Point: { $gt: 0}}).sort('-Point').exec(function (err, result) {
+    //*****View my current ranking */
+    router.post('/ViewMyCurrentRank', function (req, res) {
+        console.log("ViewMyCurrentRank" + req.body.id);
+        User.find({ Point: { $gt: 0 } }).sort('-Point').exec(function (err, result) {
             if (err) {
                 console.log(err);
             } else {
-                console.log(result);
-                res.json({ success: true, result: result });
+                // console.log(result);
+                var i = 0;
+                result.forEach(function (item) {
+                    i++;
+                    // console.log(item._id);
+                    //Look at the Player DB 
+                    if (item._id == req.body.id) {
+                        //console.log("index" + i);
+                        res.json({ success: true, result: i });
+                    }
+
+                });
+
+            }
+        });
+
+    });
+    //*****View All User Point */
+    router.post('/PlayerStatic', function (req, res) {
+        console.log("hello");
+        var array = [];
+        fs.createReadStream('static.csv')
+            .pipe(csv())
+            .on('data', function (data) {
+                //console.log(data);
+                array.push(data);
+                //res.json({ success: true, result: data });
+            })
+            .on('end', function (data) {
+                console.log(array);
+                console.log('read finished');
+                res.json({ success: true, result: array });
+                
+            });
+    });
+    //*****View All User Point */
+    router.post('/Leaderboard', function (req, res) {
+       
+            
+        User.find({ Point: { $gt: 0 } }).sort('-Point').exec(function (err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                var i = 0;
+
+                //    //console.log(result);
+                //    var i = 0;
+                var AddJason = [];
+                result.forEach(function (item) {
+                    i++;
+                    var data = [{ index: i }];
+                    data.push(item);
+                    AddJason.push(data);
+                });
+                setTimeout(function () {
+                    res.json({ success: true, result: AddJason });
+                }, 1000);
+
+
             }
         });
 
@@ -107,7 +171,7 @@ module.exports = function (router) {
     router.post('/ViewMyTeam', function (req, res) {
 
         var userId = req.body.userId;
-        console.log("ViewMyteam" +userId)
+        console.log("ViewMyteam" + userId)
         var array = [];
         Team.find({ userID: userId }).select("playerID").exec(function (err, result) {
             console.log(result);

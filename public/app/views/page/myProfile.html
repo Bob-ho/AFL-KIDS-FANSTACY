@@ -153,10 +153,13 @@
                             <a href="#" ng-click="ViewMyTeam()"><i class="fa fa-table fa-fw"></i>View My Team</a>
                         </li>
                         <li>
-                            <a href="#" ng-click="ViewMyTeam()"><i class="fa fa-table fa-fw"></i>Gain points</a>
+                            <a href="#" ng-click="GainPoint()"><i class="fa fa-table fa-fw"></i>Gain points</a>
                         </li>
                         <li class="custom-points">
                             <span>Points: {{point}}</span>
+                        </li>
+                        <li>
+                            <span>Overal Rank: {{MyRanking}}</span>
                         </li>
 
                     </ul>
@@ -251,14 +254,23 @@
                         <th scope="col">Point</th>
                     </tr>
                 </thead>
-                <tbody ng-repeat="row in ResultLeaderboard">
+                <tbody ng-repeat="row in ResultLeaderboard | startFrom:currentPage*pageSize | limitTo:pageSize">
                     <tr>
-                        <th scope="row">{{ $index + 1 }}</th>
-                        <td>{{row.TeamName}}</td>
-                        <td>{{row.Point}}</td>
+                        <th scope="row">{{ row[0].index }}</th>
+                        <td>{{row[1].TeamName}}</td>
+                        <td>{{row[1].Point}}</td>
                     </tr>
                 </tbody>
             </table>
+            <div>
+                <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                    Previous
+                </button>
+                {{currentPage+1}}/{{numberOfPages()}}
+                <button ng-disabled="currentPage >= ResultLeaderboard.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                    Next
+                </button>
+            </div>
 
 
 
