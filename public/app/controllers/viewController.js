@@ -349,6 +349,41 @@ app.controller('myProfileCtr', function ($scope, $window, $http, $location) {
 });
 app.controller('PlayerStaticController', function ($scope, $window, $http, $location) {
     console.log("PlayerStaticController");
+
+    // var today = new Date()
+    // console.log("Date" + new Date(new Date("2019-03-25") - today));
+    // $scope.currentDate = today.getDate();
+    // $scope.currentHour = today.getHours();
+    // Set the date we're counting down to
+    var countDownDate = new Date("Jan 5, 2021 15:37:25").getTime();
+    // Update the count down every 1 second
+    var x = setInterval(function () {
+
+        // Get todays date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Output the result in an element with id="demo"
+        document.getElementById("demo").innerHTML = days + "d " + hours + "h "
+             + minutes + "m " + seconds + "s ";
+        $scope.CountDownTimer = 1;
+        console.log( $scope.CountDownTimer);
+
+        // If the count down is over, write some text 
+        if (distance < 0) {
+            clearInterval(x);
+           // document.getElementById("demo").innerHTML = "EXPIRED";
+        }
+    }, 1000);
+
     $scope.currentPage = 0;
     $scope.pageSize = 15;
     $http({
@@ -357,13 +392,14 @@ app.controller('PlayerStaticController', function ($scope, $window, $http, $loca
     }).then(function mySuccess(response) {
         if (response.data.success) {
             var res = response.data.result;
+            console.log(res);
             $scope.Header = res[0];
             console.log("Header " + res[0]);
-            
+
             res.forEach(element => {
                 //console.log(element[2]);
                 switch (element[2]) {
-                    
+
                     case "ES":
                         element[2] = "Essendon";
                         break;
