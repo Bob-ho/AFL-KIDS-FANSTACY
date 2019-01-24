@@ -61,15 +61,10 @@
 
                     <li class="text-center"><a href="#whatA">What is the AFL?</a></li>
                     <ul class="nav navbar-nav navbar-right mr-auto">
-                        <li class="dropdown" ng-show="showCardToAddToCollection">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-bell"></span>
-                                My Cards
-                                <span class="caret"></span></a>
-                            <ul class="dropdown-menu" ng-repeat="card in cards">
-                                <li ng-click="AddToMyCollection()">{{card}}</li>
-
-                            </ul>
-                        </li>
+                        <li><a href="/PlayerStatic"><span class="glyphicon "></span>
+                                Player Static</a></li>
+                        <li><a href="/AFLTimer"><span class="glyphicon "></span>
+                                AFL Timer</a></li>
                         <li class="dropdown" ng-show="authenticated">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{UserName| uppercase}} </a>
                             <ul class="dropdown-menu">
@@ -77,8 +72,7 @@
                                 <li><a href="/myCollection">My Collection</a></li>
                             </ul>
                         </li>
-                        <li><a href="/PlayerStatic"><span class="glyphicon "></span>
-                            Player Static</a></li>
+
 
                         <li><a href="/register" ng-hide="authenticated"><span class="glyphicon glyphicon-user"></span>
                                 Sign
