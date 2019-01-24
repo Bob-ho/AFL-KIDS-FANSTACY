@@ -347,15 +347,35 @@ app.controller('myProfileCtr', function ($scope, $window, $http, $location) {
     }
 
 });
-app.controller('PlayerStaticController', function ($scope, $window, $http, $location) {
-    console.log("PlayerStaticController");
 
-    // var today = new Date()
-    // console.log("Date" + new Date(new Date("2019-03-25") - today));
-    // $scope.currentDate = today.getDate();
-    // $scope.currentHour = today.getHours();
-    // Set the date we're counting down to
-    var countDownDate = new Date("Jan 5, 2021 15:37:25").getTime();
+app.controller('AFLTimerController', function ($scope, $window, $http, $location) {
+    Date.prototype.addDays = function (days) {
+        var date = new Date("Jan 24, 2019 00:00:00");
+        date.setDate(date.getDate() + days);
+        return date;
+    }
+    var date = new Date();
+    var d = 0;
+    var array = [];
+    var getRound = [];
+    for (var round = 1; round <= 23; round++) {
+        var valueDay = date.addDays(d);
+        d += 7;
+        getRound.push(valueDay);
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        //console.log(valueDay);
+
+        var value = { "Round": round, "Date": valueDay.getHours() + " hours " + valueDay.getMinutes() + " minutes " + valueDay.getSeconds() + " seconds, at " + valueDay.getDate() + " " + months[valueDay.getMonth()] + " " + valueDay.getFullYear() }
+        array.push(value);
+    }
+    $scope.Round = array;
+    //console.log(array);
+
+    var index = 0;
+    console.log(getRound[0].getTime());
+    //var countDownDate = new Date("Jan 28, 2019 00:00:00").getTime();
+    var countDownDate = getRound[index].getTime();
+
     // Update the count down every 1 second
     var x = setInterval(function () {
 
@@ -373,17 +393,24 @@ app.controller('PlayerStaticController', function ($scope, $window, $http, $loca
 
         // Output the result in an element with id="demo"
         document.getElementById("demo").innerHTML = days + "d " + hours + "h "
-             + minutes + "m " + seconds + "s ";
+            + minutes + "m " + seconds + "s ";
         $scope.CountDownTimer = 1;
-        console.log( $scope.CountDownTimer);
+        console.log($scope.CountDownTimer);
 
         // If the count down is over, write some text 
         if (distance < 0) {
-            clearInterval(x);
-           // document.getElementById("demo").innerHTML = "EXPIRED";
+           // clearInterval(x);
+            index++;
+            console.log(index);
+             countDownDate = getRound[index].getTime();
+            // document.getElementById("demo").innerHTML = "EXPIRED";
         }
     }, 1000);
+});
 
+
+app.controller('PlayerStaticController', function ($scope, $window, $http, $location) {
+    console.log("PlayerStaticController");
     $scope.currentPage = 0;
     $scope.pageSize = 15;
     $http({
@@ -392,9 +419,9 @@ app.controller('PlayerStaticController', function ($scope, $window, $http, $loca
     }).then(function mySuccess(response) {
         if (response.data.success) {
             var res = response.data.result;
-            console.log(res);
+            //console.log(res);
             $scope.Header = res[0];
-            console.log("Header " + res[0]);
+            //console.log("Header " + res[0]);
 
             res.forEach(element => {
                 //console.log(element[2]);
@@ -496,6 +523,10 @@ app.config(function ($routeProvider, $locationProvider) {
         .when("/PlayerStatic", {
             templateUrl: "app/views/page/PlayerStatic.html",
             controller: 'PlayerStaticController'
+        })
+        .when("/AFLTimer", {
+            templateUrl: "app/views/page/AFLTimer.html",
+            controller: 'AFLTimerController'
         })
 
         .when("/myProfile", {
