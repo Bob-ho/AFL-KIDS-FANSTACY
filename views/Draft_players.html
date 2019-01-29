@@ -32,6 +32,21 @@
             }).disableSelection();
         }
     </script>
+    <script>
+        function allowDrop(ev) {
+          ev.preventDefault();
+        }
+        
+        function drag(ev) {
+          ev.dataTransfer.setData("text", ev.target.id);
+        }
+        
+        function drop(ev) {
+          ev.preventDefault();
+          var data = ev.dataTransfer.getData("text");
+          ev.target.appendChild(document.getElementById(data));
+        }
+        </script>
     <style>
 
         #wrapper {
@@ -182,13 +197,16 @@
                         <img alt="" class="col-lg-1" src="images/team2.jpeg" />
                     </div>
                 </div>
+                <form action="/savePlayers" method="POST">
                 <div class="col-lg-6">
                     <div id="dvDest" class="connected-sortable droppable-area2">
                         <h3 class="page-header text-center">TEAM NAME: INVINCIBLES</h3>
                     </div>
                     <br />  
-                    <button type="submit" class="btn btn-primary pull-right" data-toggle="modal" data-target="#myModal">Save Team</button>
+                    
                 </div>
+                <button type="submit" class="btn btn-primary pull-right" data-toggle="modal" data-target="#myModal">Save Team</button>
+                </form>
                 <div class="clearfix"></div>
             </div>
         </div>

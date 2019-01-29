@@ -28,7 +28,7 @@ head
     }
     #page-wrapper {
     padding: 0 15px;
-    min-height: 568px;
+    min-height: 825px;
     background-color: white;
     background:url("images/profile_bg.jpg")no-repeat;
     background-size:cover;
@@ -87,15 +87,19 @@ head
         .profile-usertitle
           .profile-usertitle-name
             a(href='/profile')= username 
-        ul#side-menu.nav
+        ul.text-center#side-menu.nav
           li
             a(href='/leaderboard')
               i.fa.fa-dashboard.fa-fw
               |  Leaderboard
           li
-            a(href='/getplayers')
-              i.fa.fa-table.fa-fw
-              |  Draft Players
+            a(href='/myteam' )
+              i.fa.fa-dashboard.fa-fw
+              |  My Team
+          li
+            a(href='/earnPoints' )
+              i.fa.fa-dashboard.fa-fw
+              |  Earn Points
           li
             a(href='/logout')
               i.fa.fa-edit.fa-fw
@@ -119,14 +123,26 @@ head
         h3 Team Name
       .col-lg-4
         h3 Points
-      .col-lg-4
-        h3 1
-      .col-lg-4
-        h3 Amazers
-      .col-lg-4
-        h3 100000000
-      
-      .clearfix
+      <br/>
+      <br/>
+      each val,index in listteams
+             - var name = val.name
+             - var tname = teamName
+             if(name == tname)
+              .col-lg-4(style='color:red;')
+               h3= index+1
+              .col-lg-4(style='color:red;')
+               h3= name 
+              .col-lg-4(style='color:red;')
+               h3= val.points
+             else
+              .col-lg-4
+               h3= index+1
+              .col-lg-4
+               h3= name 
+              .col-lg-4
+               h3= val.points
+    .clearfix
   // /#page-wrapper
 // /#wrapper
 #modalPlayerForm.modal.fade(tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true')

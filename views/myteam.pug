@@ -1,0 +1,193 @@
+head
+  link(rel='icon' href='images/Kfl-1.png' width='50' height='50' type='image/ico')
+  title  My Team 
+  meta(name='Generator' content='EditPlus')
+  meta(name='Author' content='')
+  meta(name='Keywords' content='')
+  meta(name='Description' content='')
+  link(rel='stylesheet' href='css/bootstrap.min.css')
+  // AngularJS
+  script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js')
+  script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js')
+  link(rel='stylesheet' href='css/bootstrap.min.css')
+  // Custom CSS
+  link(href='css/custom.css' rel='stylesheet')
+  script(src='vendor/jquery/jquery-3.2.1.min.js')
+  script(type='text/javascript' src='https://code.jquery.com/ui/1.11.4/jquery-ui.min.js')
+  link(rel='stylesheet' href='css/bootstrap.min.css')
+
+  link(rel='stylesheet' type='text/css' href='css/main.css')
+  script(src='js/main.js')
+  link(rel='stylesheet' href='//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css')
+  script(src='https://code.jquery.com/jquery-1.12.4.js')
+  script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.js')
+
+  s
+  // Custom CSS
+  link(href='css/custom.css' rel='stylesheet')
+  script(src='js/bootstrap.min.js')
+  // Metis Menu Plugin JavaScript
+  script(src='js/custom.js')
+  
+
+  
+    
+  style.
+    #wrapper {
+    width: 100%;
+    }
+    #page-wrapper {
+    padding: 0 15px;
+    min-height: 568px;
+    background-color: white;
+    background: url("images/profile_bg.jpg")no-repeat;
+    background-size: cover;
+    }
+    .profile-userpic img {
+    float: none;
+    margin: 0 auto;
+    width: 100px;
+    height: 100px;
+    -webkit-border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    border-radius: 50% !important;
+    }
+    .profile-usertitle {
+    text-align: center;
+    margin-top: 20px;
+    }
+    .profile-usertitle-name {
+    color: #5a7391;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 7px;
+    }
+    .card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    margin: auto;
+    text-align: center;
+    font-family: arial;
+    background: #fff;
+    }
+    .title {
+    color: #000;
+    background: #fff;
+    padding: 7px 0px;
+    font-size: 18px;
+    }
+    .page-header {
+    color: #fff;
+    }
+    .connected-sortable img {
+    height: 115px;
+    width: 119px;
+    margin: 3px 3px 5px;
+    padding:0;
+    }
+    #dvSource, #dvDest{
+    border: 5px solid #ccc; 
+    margin: 10px;
+    padding: 13px 5px 5px 10px;
+    min-height: 400px;
+    }
+#wrapper
+  // Navigation
+  nav.navbar.navbar-default.navbar-static-top(role='navigation' style='margin-bottom: 0')
+    .navbar-header
+      button.navbar-toggle(type='button' data-toggle='collapse' data-target='.navbar-collapse')
+        span.sr-only Toggle navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      a.site_title(href='home')
+        img(src='images/Kflcut.png' width='200' height='125' style='margin-left:25px;')
+    // /.navbar-header
+    h1(style='text-align:center; padding-top:40px; font-size:28px;') KIDS FANTASY LEAGUE
+    .navbar-default.sidebar(role='navigation')
+      .sidebar-nav.navbar-collapse
+        .profile-userpic
+          img.img-responsive(src='images/profile.png' alt='')
+        // END SIDEBAR USERPIC
+        // SIDEBAR USER TITLE
+        .profile-usertitle
+          .profile-usertitle-name
+            a(href='/profile')= username 
+        ul.text-center#side-menu.nav
+          li
+            a(href='/leaderboard')
+              i.fa.fa-dashboard.fa-fw
+              |  Leaderboard
+          li
+            a(href='/myteam')
+              i.fa.fa-dashboard.fa-fw
+              |  My Team
+            a(style="margin-left:20px;" href='/getplayers')
+              i.fa.fa-table.fa-fw
+              |  Draft Players
+          li
+            a(href='/earnPoints' )
+              i.fa.fa-dashboard.fa-fw
+              |  Earn Points
+          li
+            a(href='/logout')
+              i.fa.fa-edit.fa-fw
+              |  Logout
+          li.text-center
+            a(href='#' 
+            data-toggle='modal' 
+            data-target='#modalPlayerForm') 
+              |  Add Players
+        
+      // /.sidebar-collapse
+    // /.navbar-static-side
+  #page-wrapper
+    .row
+      .col-lg-12
+      // /.col-lg-12
+    br
+    .row
+      .col-lg-12
+         #dvSource.connected-sortable.droppable-area1
+          h3.page-header.text-center= teamName
+          each val,index in teamplayers
+                img.col-lg-1(name=""+val.name id=""+val._id alt='' draggable='true' ondragstart='drag(event)' src="/"+ val.imgsrc  )
+           
+      .clearfix
+  // /#page-wrapper
+
+// /#wrapper
+#modalPlayerForm.modal.fade(tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true')
+  .modal-dialog(role='document')
+    .modal-content
+      .modal-header.text-center
+        h4.modal-title.w-100.font-weight-bold Add New Player
+        button.close(type='button' data-dismiss='modal' aria-label='Close')
+          span(aria-hidden='true') &times;
+      .modal-body.mx-3
+        form#addPlayerForm(method='post' action='/addPlayers')
+          .md-form.mb-5
+            #errorMessage(style='color:red; display:none')
+          .md-form.mb-4
+            i.fa.fa-users
+            input.form-control.validate(type='text' name='pname' placeholder='Player name')
+          .md-form.mb-4
+            i.fa.fa-users
+            input.form-control.validate(type='text' name='imgsrc' placeholder='Player image source')
+          .md-form.mb-4
+            i.fa.fa-users
+            input.form-control.validate(type='text' name='team' placeholder='Player Team')
+            .md-form.mb-4
+            i.fa.fa-users
+            input.form-control.validate(type='text' name='age' placeholder='Player Age')
+            .md-form.mb-4
+            i.fa.fa-users
+            input.form-control.validate(type='text' name='points' placeholder='Player Points')
+            .md-form.mb-4
+            i.fa.fa-users
+            input.form-control.validate(type='text' name='status' placeholder='Player Current status')
+          
+          .modal-footer.d-flex.justify-content-center
+            button.btn.btn-default Submit 
+            
+

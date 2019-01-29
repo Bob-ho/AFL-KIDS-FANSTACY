@@ -6,6 +6,10 @@ head
   meta(name='Keywords' content='')
   meta(name='Description' content='')
   link(rel='stylesheet' href='css/bootstrap.min.css')
+  // AngularJS
+  script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js')
+  script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js')
+  link(rel='stylesheet' href='css/bootstrap.min.css')
   // Custom CSS
   link(href='css/custom.css' rel='stylesheet')
   script(src='vendor/jquery/jquery-3.2.1.min.js')
@@ -24,14 +28,47 @@ head
   script(src='js/bootstrap.min.js')
   // Metis Menu Plugin JavaScript
   script(src='js/custom.js')
+  
+
   script(type='text/javascript').
-    $(init);
-    function init() {
-    $(".droppable-area1, .droppable-area2").sortable({
-    connectWith: ".connected-sortable",
-    stack: '.connected-sortable ul'
-    }).disableSelection();
-    }
+    //- $(init);
+
+      var selectedPlayers;
+      function allowDrop(ev) {
+        ev.preventDefault();
+        }
+      function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+        }
+      function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        console.log(data);
+        var player = document.getElementById(data);
+        ev.target.appendChild(player);
+        
+
+
+        var IDs = [];
+        $("#dvDest").find("img").each(function(){ IDs.push(this.id); });
+
+        if(IDs.length >4){
+            var playerIDList = document.createElement('input');
+               playerIDList.value = IDs;
+               playerIDList.name = "IDList";
+               playerIDList.type = "hidden"
+          ev.target.appendChild(playerIDList);
+        }
+        console.log(IDs.length);
+
+        
+        }
+
+    //- $(".droppable-area1, .droppable-area2").sortable({
+    //- connectWith: ".connected-sortable",
+    //- stack: '.connected-sortable ul'
+    //- }).disableSelection();
+    
   style.
     #wrapper {
     width: 100%;
@@ -86,7 +123,8 @@ head
     padding:0;
     }
     #dvSource, #dvDest{
-    border: 5px solid #ccc;
+    border: 5px solid #ccc; 
+    margin: 10px;
     padding: 13px 5px 5px 10px;
     min-height: 400px;
     }
@@ -112,15 +150,22 @@ head
         .profile-usertitle
           .profile-usertitle-name
             a(href='/profile')= username 
-        ul#side-menu.nav
+        ul.text-center#side-menu.nav
           li
             a(href='/leaderboard')
               i.fa.fa-dashboard.fa-fw
               |  Leaderboard
           li
-            a(href='/getplayers')
+            a(href='/myteam')
+              i.fa.fa-dashboard.fa-fw
+              |  My Team
+            a(style="margin-left:20px;" href='/getplayers')
               i.fa.fa-table.fa-fw
-              |  Draft Players
+              | > Draft Players
+          li
+            a(href='/earnPoints' )
+              i.fa.fa-dashboard.fa-fw
+              |  Earn Points
           li
             a(href='/logout')
               i.fa.fa-edit.fa-fw
@@ -140,15 +185,38 @@ head
     br
     .row
       .col-lg-6
-        #dvSource.connected-sortable.droppable-area1
+         #dvSource.connected-sortable.droppable-area1(ondrop='drop(event)' ondragover='allowDrop(event)')
           h3.page-header.text-center CHOOSE PLAYERS
-          img.col-lg-1(alt='' src="/"+ playerimg  )
-          
-      .col-lg-6
-        #dvDest.connected-sortable.droppable-area2
-          h3.page-header.text-center= teamName
-        br
-        button.btn.btn-primary.pull-right(type='submit' data-toggle='modal' data-target='#myModal') Save Team
+          table(cellspacing='0' cellpadding='0' border='0' width='325')
+            tr
+              td
+                table(cellspacing='0' cellpadding='1' border='1' width='500')
+                  tr(style='color:white;background-color:grey')
+                    th Picture
+                    th Name
+                    th Team
+                    th Opponent
+            tr
+              td
+                div(style='width:500px; height:400px; overflow:auto;')
+                  table(cellspacing='0' cellpadding='1' border='1' width='300')
+                    each val,index in playerlist
+                      tr
+                        td 
+                          img(name="player"+index id=""+val._id alt='' draggable='true' ondragstart='drag(event)' src="/"  )
+                        td
+                          h4(style="color: white;")= val.name
+                        td
+                          h4(style="color: white;")= val.team
+                        td
+                          h4(style="color: white;")= val.opponent
+
+      form#savePlayerform(action="/savePlayers" method='post')
+        .col-lg-6
+          #dvDest.connected-sortable.droppable-area2(ondrop='drop(event)' ondragover='allowDrop(event)')
+           h3.page-header.text-center= teamName
+           br
+          button.btn.btn-primary.pull-right Save Team   
       .clearfix
   // /#page-wrapper
 // /#wrapper

@@ -129,13 +129,13 @@
     })(jQuery);
 
     (function ($) {
-        $('#addPlayerform').submit(function(e){
+        $('#addPlayerForm').submit(function(e){
 
             e.preventDefault();
             $.ajax({
-                url: "/sign_up",
+                url: "/addPlayers",
                 type: 'POST',
-                data : $('#addPlayerform').serialize(),
+                data : $('#addPlayerForm').serialize(),
                 success: function(res){
                     if(res.message){
                         $('#errorMessageSignup').text(res.message);
@@ -143,6 +143,27 @@
                     }
                     else {
                         window.location.assign('/addPlayers');
+                    }
+                }
+            });
+        });
+    })(jQuery);
+
+    (function ($) {
+        $('#savePlayerform').submit(function(e){
+
+            e.preventDefault();
+            $.ajax({
+                url: "/savePlayers",
+                type: 'POST',
+                data : $('#savePlayerform').serialize(),
+                success: function(res){
+                    if(res.message){
+                        $('#errorMessageSignup').text(res.message);
+                        $('#errorMessageSignup').show();
+                    }
+                    else {
+                        // window.location.assign('/savePlayers2');
                     }
                 }
             });

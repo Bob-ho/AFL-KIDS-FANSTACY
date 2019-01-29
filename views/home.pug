@@ -90,25 +90,85 @@ head
       a.site_title(href='home')
         img(src='images/Kflcut.png' width='200' height='125' style='margin-left:25px;')
     // /.navbar-header
-    h1(style='text-align:center; padding-top:40px; font-size:28px;') KIDS FANTASY LEAGUE
+    ul#teamLogo.nav.navbar-nav(style="padding-top:30px;")
+      li(ng-hide='aflImageHide')
+        a(href='#')
+          img(src='images/220px-Sydney_Swans_Logo.svg.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a(href='#')
+          img(src='images/1200px-Essendon_FC_logo.svg.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/1200px-Fremantle_FC_logo.svg.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/1200px-Geelong_Cats_logo.svg.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/1200px-Gold_Coast_Suns_logo.svg.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/1200px-GWS_Giants_logo.svg.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/1200px-Hawthorn-football-club-brand.svg.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/1200px-Melbournefc.svg.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/1200px-North_Melbourne_FC_logo.svg.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/1200px-Richmond_Tigers_logo.svg.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/1200px-St_Kilda_FC_logo.svg.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/1200px-Western_Bulldogs_logo.svg.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/Adelaide_Crows.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/Brisbane_Lions.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/1200px-Carlton_FC_logo.svg.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/Collingwood.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/PortAdelaid.png' width='30' height='30' alt='')
+      li(ng-hide='aflImageHide')
+        a.navbar-brand(href='#')
+          img(src='images/West_Coast_Eagles_logo_2017.svg.png' width='30' height='30' alt='')
+    
     .navbar-default.sidebar(role='navigation')
       .sidebar-nav.navbar-collapse
         .profile-userpic
           img.img-responsive(src='images/profile.png' alt='')
         // END SIDEBAR USERPIC
         // SIDEBAR USER TITLE
+        
         .profile-usertitle
           .profile-usertitle-name
             a(href='/profile')= username 
-        ul#side-menu.nav
+        ul.text-center#side-menu.nav
           li
             a(href='/leaderboard')
               i.fa.fa-dashboard.fa-fw
               |  Leaderboard
           li
-            a(href='/getplayers')
-              i.fa.fa-table.fa-fw
-              |  Draft Players
+            a(href='/myteam' )
+              i.fa.fa-dashboard.fa-fw
+              |  My Team
+          li
+            a(href='/earnPoints' )
+              i.fa.fa-dashboard.fa-fw
+              |  Earn Points
           li
             a(href='/logout')
               i.fa.fa-edit.fa-fw
@@ -120,6 +180,12 @@ head
             data-toggle='modal' 
             data-target='#modalPlayerForm') 
               |  Add Players
+              
+          li.text-center
+            
+            a(href='/webCrawler')
+              i.fa.fa-edit.fa-fw 
+              |  Update Players
           
       // /.sidebar-collapse
     // /.navbar-static-side
@@ -132,9 +198,9 @@ head
     #noTeam.row(style='display: none;')
       .col-lg-12(style='display:table;width:100%;')
         .choose_team
-          a(href='/playerDraft')
+          a(href='/getplayers')
             img(src='images/sign-add-icon.png' alt='John' style='width:100px;height:100px;')
-          p(style='background-color:transparent; color:white;').title Choose Your Team
+          p(style='background-color:transparent; color:white;').title Add players in your team
     #team(style='display: none')
       .row
         .col-lg-4
