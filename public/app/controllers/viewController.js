@@ -137,10 +137,64 @@ app.controller('gainPointsController', function ($scope, $window, $http) {
 });
 
 //my Account controller
-app.controller('myProfileCtr', function ($scope, $window, $http, $location) {
-    console.log("Profile controller");
+app.controller('myGameCtr', function ($scope, $window, $http, $location) {
+    console.log("myGame controller");
     $scope.currentPage = 0;
-    $scope.pageSize = 5;
+    $scope.pageSize = 10;
+    $scope.myFunc = function () {
+        console.log("Search" + $scope.Search);
+        var array = [];
+        //Get the player detail which given the _id to retrived data from the database
+        $http({
+            method: "post",
+            url: "/ViewPlayerPool"
+            //data: { "username": $window.localStorage.getItem("username") }
+        }).then(function mySuccess(response) {
+            if (response.data.success) {
+                $scope.playerPools = response.data.collections;
+                $scope.playerPools.forEach(element => {
+                    if (element.TeamName == $scope.Search) {
+                        console.log("element " + element.TeamName + "name " + element.playerName);
+                        array.push(element);
+                    }
+                });
+                $scope.playerPools = array;
+            }
+            else {
+                console.log(response.data.result);
+            }
+        });
+    };
+    $scope.myFuncPlayerName = function () {
+        console.log("PlayerName " + $scope.PlayerName);
+        $scope.playerPools = [];
+        var array = [];
+        //Get the player detail which given the _id to retrived data from the database
+        $http({
+            method: "post",
+            url: "/ViewPlayerPool"
+            //data: { "username": $window.localStorage.getItem("username") }
+        }).then(function mySuccess(response) {
+            if (response.data.success) {
+                var res = response.data.collections;
+                //console.log($scope.playerPools);
+                res.forEach(element => {
+                    // console.log("element " + element.playerName) ;
+                    if (element.playerName == $scope.PlayerName) {
+                        console.log("name " + element.TeamName);
+                        array.push(element);
+                    }
+                });
+                $scope.playerPools = array;
+                $scope.PlayerName = "";
+            }
+            else {
+                console.log(response.data.result);
+            }
+        });
+
+    };
+
     $scope.teams = Teams;
     //Set view, 
     $scope.MyTeamDisplay = false;
@@ -152,6 +206,7 @@ app.controller('myProfileCtr', function ($scope, $window, $http, $location) {
     FunctionLeaderBoard();
     MyRanking();
     function MyRanking() {
+        console.log("Hi");
         $http({
             method: "post",
             url: "/ViewMyCurrentRank",
@@ -160,7 +215,7 @@ app.controller('myProfileCtr', function ($scope, $window, $http, $location) {
             if (response.data.success) {
                 var res = response.data.result;
                 $scope.MyRanking = res;
-                console.log(res);
+                console.log("view my rank" + res);
             }
             else {
                 console.log(response.data);
@@ -187,10 +242,6 @@ app.controller('myProfileCtr', function ($scope, $window, $http, $location) {
     function FunctionLeaderBoard() {
 
         $scope.data = [];
-
-
-
-
         $scope.MyTeamDisplay = false;
         $scope.DraftTeamDisplay = false;
         $scope.LeaderBoarDisplay = true;
@@ -253,8 +304,11 @@ app.controller('myProfileCtr', function ($scope, $window, $http, $location) {
             if (response.data.success) {
                 var res = response.data.collections;
                 console.log(res);
-                PlayerPools = response.data.collections;
-                $scope.playerPools = PlayerPools;
+                PlayerPools = res;
+                $scope.playerPools = res;
+                $scope.numberOfPages = function () {
+                    return Math.ceil($scope.playerPools.length / $scope.pageSize);
+                }
             }
             else {
                 console.log(response.data.result);
@@ -327,7 +381,7 @@ app.controller('myProfileCtr', function ($scope, $window, $http, $location) {
                     console.log(response);
                     FunctionViewMyTeam();
                     MyRanking();
-
+                    FunctionPoint();
                 }
                 else {
                     console.log(response);
@@ -348,7 +402,9 @@ app.controller('myProfileCtr', function ($scope, $window, $http, $location) {
 
 });
 
-app.controller('AFLTimerController', function ($scope, $window, $http, $location) {
+app.controller('AFLTimerController', function ($scope, $interval, $location, $window) {
+
+
     Date.prototype.addDays = function (days) {
         var date = new Date("Jan 24, 2019 00:00:00");
         date.setDate(date.getDate() + days);
@@ -375,10 +431,7 @@ app.controller('AFLTimerController', function ($scope, $window, $http, $location
     console.log(getRound[0].getTime());
     //var countDownDate = new Date("Jan 28, 2019 00:00:00").getTime();
     var countDownDate = getRound[index].getTime();
-
-    // Update the count down every 1 second
-    var x = setInterval(function () {
-
+    $interval(function () {
         // Get todays date and time
         var now = new Date().getTime();
 
@@ -392,25 +445,29 @@ app.controller('AFLTimerController', function ($scope, $window, $http, $location
         var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
         // Output the result in an element with id="demo"
-        document.getElementById("demo").innerHTML = days + "d " + hours + "h "
-            + minutes + "m " + seconds + "s ";
-        $scope.CountDownTimer = 1;
-        console.log($scope.CountDownTimer);
-
+        $scope.theTime = "Round Week " + (index + 1) + ", Deadline: " + days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
         // If the count down is over, write some text 
-        if (distance < 0) {
-           // clearInterval(x);
+        if (distance <= 0) {
+            //clearInterval(x);
+            //$location.path('/PlayerStatic').search({ index: index })
             index++;
-            console.log(index);
-             countDownDate = getRound[index].getTime();
+            $window.localStorage.setItem("index", index);
+            //console.log(index);
+            countDownDate = getRound[index].getTime();
+
             // document.getElementById("demo").innerHTML = "EXPIRED";
         }
     }, 1000);
 });
 
 
-app.controller('PlayerStaticController', function ($scope, $window, $http, $location) {
+app.controller('PlayerStaticController', function ($scope, $http, $location, $window) {
+
     console.log("PlayerStaticController");
+    // var urlParams = $location.search();
+    // var index = urlParams.index;
+    console.log("index" + $window.localStorage.getItem("index"));
+    $scope.round = $window.localStorage.getItem("index");
     $scope.currentPage = 0;
     $scope.pageSize = 15;
     $http({
@@ -422,72 +479,83 @@ app.controller('PlayerStaticController', function ($scope, $window, $http, $loca
             //console.log(res);
             $scope.Header = res[0];
             //console.log("Header " + res[0]);
-
+            var AddPoint = [];
             res.forEach(element => {
-                //console.log(element[2]);
-                switch (element[2]) {
+                if (element[4] == $window.localStorage.getItem("index")) {
 
-                    case "ES":
-                        element[2] = "Essendon";
-                        break;
-                    case "RI":
-                        element[2] = "Richmond";
-                        break;
-                    case "AD":
-                        element[2] = "Adelaide";
-                        break;
-                    case "BL":
-                        element[2] = "Brisbane";
-                        break;
-                    case "CA":
-                        element[2] = "Carlton";
-                        break;
-                    case "CW":
-                        element[2] = "Collingwood";
-                        break;
-                    case "FR":
-                        element[2] = "Fremantle";
-                        break;
-                    case "GE":
-                        element[2] = "Geelong";
-                        break;
-                    case "GC":
-                        element[2] = "Gold Coast";
-                        break;
+                    switch (element[2]) {
+                        case "ES":
+                            element[2] = "Essendon";
+                            break;
+                        case "RI":
+                            element[2] = "Richmond";
+                            break;
+                        case "AD":
+                            element[2] = "Adelaide";
+                            break;
+                        case "BL":
+                            element[2] = "Brisbane";
+                            break;
+                        case "CA":
+                            element[2] = "Carlton";
+                            break;
+                        case "CW":
+                            element[2] = "Collingwood";
+                            break;
+                        case "FR":
+                            element[2] = "Fremantle";
+                            break;
+                        case "GE":
+                            element[2] = "Geelong";
+                            break;
+                        case "GC":
+                            element[2] = "Gold Coast";
+                            break;
 
-                    case "GW":
-                        element[2] = "Greater Western Sydney";
-                        break;
-                    case "HW":
-                        element[2] = "Hawthorn";
-                        break;
-                    case "ME":
-                        element[2] = "Melbourne";
-                        break;
-                    case "NM":
-                        element[2] = "North Melbourne";
-                        break;
-                    case "PA":
-                        element[2] = "Port Adelaide";
-                        break;
-                    case "SK":
-                        element[2] = "St Kilda";
-                        break;
-                    case "SY":
-                        element[2] = "Sydney";
-                        break;
-                    case "WC":
-                        element[2] = "West Coast";
-                        break;
-                    case "WB":
-                        element[2] = "Western Bulldogs";
-                        break;
-                    default:
+                        case "GW":
+                            element[2] = "Greater Western Sydney";
+                            break;
+                        case "HW":
+                            element[2] = "Hawthorn";
+                            break;
+                        case "ME":
+                            element[2] = "Melbourne";
+                            break;
+                        case "NM":
+                            element[2] = "North Melbourne";
+                            break;
+                        case "PA":
+                            element[2] = "Port Adelaide";
+                            break;
+                        case "SK":
+                            element[2] = "St Kilda";
+                            break;
+                        case "SY":
+                            element[2] = "Sydney";
+                            break;
+                        case "WC":
+                            element[2] = "West Coast";
+                            break;
+                        case "WB":
+                            element[2] = "Western Bulldogs";
+                            break;
+                        default:
+                    }
+                    var value = 0;
+                    for(var i = 5; i<=27; i ++)
+                    {
+                        value += Number(element[i]);
+                    }
+                   
+                    var data = [{ Point: value }];
+                    data.push(element);
+                    AddPoint.push(data);
                 }
             });
+            console.log(AddPoint);
 
-
-            $scope.PlayerStatic = res;
+            $scope.PlayerStatic = AddPoint;
+            //console.log(res);
             $scope.numberOfPages = function () {
                 return Math.ceil($scope.PlayerStatic.length / $scope.pageSize);
             }
@@ -529,9 +597,9 @@ app.config(function ($routeProvider, $locationProvider) {
             controller: 'AFLTimerController'
         })
 
-        .when("/myProfile", {
-            templateUrl: "app/views/page/myProfile.html",
-            controller: 'myProfileCtr'
+        .when("/myGame", {
+            templateUrl: "app/views/page/myGame.html",
+            controller: 'myGameCtr'
         })
         .otherwise({ redirectTo: "/" });
     $locationProvider.html5Mode({
