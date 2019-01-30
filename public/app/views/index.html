@@ -47,29 +47,21 @@
             <div class="collapse navbar-collapse" id="myNavbar" resize>
                 <ul class="nav navbar-nav" id="teamLogo">
                     <li><a href="/Home">Home</a></li>
-                    <li><a href="/TeamAgainst">Team Against</a></li>
+                    <li class="text-center"><a href="Home#what">What is KFL</a></li>
 
+                    <li class="text-center"><a href="Home#how">How do I play?</a></li>
 
+                    <li class="text-center"><a href="Home#whatg">What do I get?</a></li>
 
-
-
-                    <li class="text-center"><a href="#what">What is KFL</a></li>
-
-                    <li class="text-center"><a href="#how">How do I play?</a></li>
-
-                    <li class="text-center"><a href="#whatg">What do I get?</a></li>
-
-                    <li class="text-center"><a href="#whatA">What is the AFL?</a></li>
+                    <li class="text-center"><a href="Home#whatA">What is the AFL?</a></li>
+                    <li><a href="/PlayerStatic">Player Static</a></li>
+                    <li><a href="/AFLTimer">AFL Timer</a></li>
                     <ul class="nav navbar-nav navbar-right mr-auto">
-                        <li><a href="/PlayerStatic"><span class="glyphicon "></span>
-                                Player Static</a></li>
-                        <li><a href="/AFLTimer"><span class="glyphicon "></span>
-                                AFL Timer</a></li>
+                        <li><a href="/myGame" ng-show="authenticated">My Game</a></li>
+
                         <li class="dropdown" ng-show="authenticated">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{UserName| uppercase}} </a>
                             <ul class="dropdown-menu">
-                                <li><a href="/myProfile">My Profile</a></li>
-                                <li><a href="/myCollection">My Collection</a></li>
                             </ul>
                         </li>
 
@@ -87,10 +79,7 @@
                 </ul>
             </div>
         </div>
-
     </nav>
-
-
     <div class="container">
         <div ng-view>
 

@@ -123,14 +123,15 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-
-                    <h3 class="page-header text-center">Player</h3>
+                    <h3 class="page-header text-center">Result Player Round {{round}}</h3>
                 </div>
             </div>
             <table class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">Number</th>
+                        <th scope="col">Point</th>
+                       
                         <th scope="col">{{Header[0]}}</th>
                         <th scope="col">{{Header[2]}}</th>
                         <th scope="col">{{Header[5]}}</th>
@@ -144,12 +145,13 @@
                     <!-- ng-if="row[2] == 'CA'" -->
                     <tr>
                         <td>{{$index }}</td>
-                        <td>{{row[0]}}</td>
-                        <td>{{row[2]}}</td>
-                        <td>{{row[5]}}</td>
-                        <td>{{row[9]}}</td>
-                        <td>{{row[26]}}</td>
-                        <td>{{row[27]}}</td>
+                        <td>{{row[0].Point}}</td>
+                        <td>{{row[1][0]}}</td>
+                        <td>{{row[1][2]}}</td>
+                        <td>{{row[1][5]}}</td>
+                        <td>{{row[1][9]}}</td>
+                        <td>{{row[1][26]}}</td>
+                        <td>{{row[1][27]}}</td>
                     </tr>
                 </tbody>
             </table>
