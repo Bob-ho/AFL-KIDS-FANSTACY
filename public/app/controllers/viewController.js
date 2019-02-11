@@ -137,7 +137,7 @@ app.controller('gainPointsController', function ($scope, $window, $http) {
 });
 
 //my Account controller
-app.controller('myGameCtr', function ($scope, $window, $http, $location) {
+app.controller('myGameCtr', function ($scope, $window, $http, $location,$interval) {
     console.log("myGame controller");
     $scope.currentPage = 0;
     $scope.pageSize = 10;
@@ -245,22 +245,41 @@ app.controller('myGameCtr', function ($scope, $window, $http, $location) {
         $scope.MyTeamDisplay = false;
         $scope.DraftTeamDisplay = false;
         $scope.LeaderBoarDisplay = true;
-        $http({
-            method: "post",
-            url: "/Leaderboard"
-        }).then(function mySuccess(response) {
-            if (response.data.success) {
-                var res = response.data.result;
-                $scope.ResultLeaderboard = res;
-                $scope.numberOfPages = function () {
-                    return Math.ceil($scope.ResultLeaderboard.length / $scope.pageSize);
+        function getTime() {
+            $http({
+                method: "get",
+                url: "/Leaderboard"
+            }).then(function mySuccess(response) {
+                if (response.data.success) {
+                    var res = response.data.result;
+                    $scope.ResultLeaderboard = res;
+                    $scope.numberOfPages = function () {
+                        return Math.ceil($scope.ResultLeaderboard.length / $scope.pageSize);
+                    }
+                    console.log(res);
                 }
-                console.log(res);
-            }
-            else {
-                console.log(response.data);
-            }
-        });
+            });
+    
+        }
+        $interval(function () {
+            getTime();
+        }, 1000);
+        // $http({
+        //     method: "post",
+        //     url: "/Leaderboard"
+        // }).then(function mySuccess(response) {
+        //     if (response.data.success) {
+        //         var res = response.data.result;
+        //         $scope.ResultLeaderboard = res;
+        //         $scope.numberOfPages = function () {
+        //             return Math.ceil($scope.ResultLeaderboard.length / $scope.pageSize);
+        //         }
+        //         console.log(res);
+        //     }
+        //     else {
+        //         console.log(response.data);
+        //     }
+        // });
     }
     function FunctionViewMyTeam() {
         $scope.MyTeamDisplay = true;
@@ -402,61 +421,23 @@ app.controller('myGameCtr', function ($scope, $window, $http, $location) {
 
 });
 
-app.controller('AFLTimerController', function ($scope, $interval, $location, $window) {
+app.controller('AFLTimerController', function ($scope, $interval, $http, $window) {
+    function getTime() {
+        $http({
+            method: "get",
+            url: "/getTime"
+        }).then(function mySuccess(response) {
+            if (response.data.success) {
+                var res = response.data.Time;
+                console.log(res);
+                $scope.theTime = res;
+                $scope.Round = response.data.round;
+            }
+        });
 
-
-    Date.prototype.addDays = function (days) {
-        var date = new Date("Jan 24, 2019 00:00:00");
-        date.setDate(date.getDate() + days);
-        return date;
     }
-    var date = new Date();
-    var d = 0;
-    var array = [];
-    var getRound = [];
-    for (var round = 1; round <= 23; round++) {
-        var valueDay = date.addDays(d);
-        d += 7;
-        getRound.push(valueDay);
-        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        //console.log(valueDay);
-
-        var value = { "Round": round, "Date": valueDay.getHours() + " hours " + valueDay.getMinutes() + " minutes " + valueDay.getSeconds() + " seconds, at " + valueDay.getDate() + " " + months[valueDay.getMonth()] + " " + valueDay.getFullYear() }
-        array.push(value);
-    }
-    $scope.Round = array;
-    //console.log(array);
-
-    var index = 0;
-    console.log(getRound[0].getTime());
-    //var countDownDate = new Date("Jan 28, 2019 00:00:00").getTime();
-    var countDownDate = getRound[index].getTime();
     $interval(function () {
-        // Get todays date and time
-        var now = new Date().getTime();
-
-        // Find the distance between now and the count down date
-        var distance = countDownDate - now;
-
-        // Time calculations for days, hours, minutes and seconds
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        // Output the result in an element with id="demo"
-        $scope.theTime = "Round Week " + (index + 1) + ", Deadline: " + days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-        // If the count down is over, write some text 
-        if (distance <= 0) {
-            //clearInterval(x);
-            //$location.path('/PlayerStatic').search({ index: index })
-            index++;
-            $window.localStorage.setItem("index", index);
-            //console.log(index);
-            countDownDate = getRound[index].getTime();
-
-            // document.getElementById("demo").innerHTML = "EXPIRED";
-        }
+        getTime();
     }, 1000);
 });
 
@@ -466,8 +447,8 @@ app.controller('PlayerStaticController', function ($scope, $http, $location, $wi
     console.log("PlayerStaticController");
     // var urlParams = $location.search();
     // var index = urlParams.index;
-    console.log("index" + $window.localStorage.getItem("index"));
-    $scope.round = $window.localStorage.getItem("index");
+    //console.log("index" + $window.localStorage.getItem("index"));
+    //$scope.round = $window.localStorage.getItem("index");
     $scope.currentPage = 0;
     $scope.pageSize = 15;
     $http({
@@ -476,12 +457,13 @@ app.controller('PlayerStaticController', function ($scope, $http, $location, $wi
     }).then(function mySuccess(response) {
         if (response.data.success) {
             var res = response.data.result;
+            $scope.round = response.data.round;
             //console.log(res);
             $scope.Header = res[0];
             //console.log("Header " + res[0]);
             var AddPoint = [];
             res.forEach(element => {
-                if (element[4] == $window.localStorage.getItem("index")) {
+                // if (element[4] == $window.localStorage.getItem("index")) {
 
                     switch (element[2]) {
                         case "ES":
@@ -542,15 +524,14 @@ app.controller('PlayerStaticController', function ($scope, $http, $location, $wi
                         default:
                     }
                     var value = 0;
-                    for(var i = 5; i<=27; i ++)
-                    {
+                    for (var i = 5; i <= 27; i++) {
                         value += Number(element[i]);
                     }
-                   
+
                     var data = [{ Point: value }];
                     data.push(element);
                     AddPoint.push(data);
-                }
+                //}
             });
             console.log(AddPoint);
 
