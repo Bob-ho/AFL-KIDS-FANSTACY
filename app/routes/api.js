@@ -9,23 +9,38 @@ var csv = require('fast-csv');
 
 
 module.exports = function (router) {
-    Date.prototype.addDays = function (days) {
-        var date = new Date("Jan 24, 2019 00:00:00");
+    //Global variable
+    var timeString;
+     Date.prototype.addDays = function (days) {
+        var date = new Date("Feb 11, 2019 11:39:00");
         date.setDate(date.getDate() + days);
         return date;
     }
     var date = new Date();
-    var day = 0;
+    var d = 0;
+    var Round = [];
     var getRound = [];
     for (var round = 1; round <= 23; round++) {
-        var valueDay = date.addDays(day);
-        day += 1;
+        var valueDay = date.addDays(d);
+        d += 1 / (24 * 60)
         getRound.push(valueDay);
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        //console.log(valueDay);
+
+        var value = { "Round": round, "Date": valueDay.getHours() + " hours " + valueDay.getMinutes() + " minutes " + valueDay.getSeconds() + " seconds, at " + valueDay.getDate() + " " + months[valueDay.getMonth()] + " " + valueDay.getFullYear() }
+        Round.push(value);
     }
+   
     var index = 0;
+    console.log(getRound[0].getTime());
+    //var countDownDate = new Date("Jan 28, 2019 00:00:00").getTime();
     var countDownDate = getRound[index].getTime();
+   
+
+
     function intervalFunc() {
-        //console.log('Cant stop me now!');
+       
+       //Get todays date and time
         var now = new Date().getTime();
 
         // Find the distance between now and the count down date
@@ -38,15 +53,16 @@ module.exports = function (router) {
         var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
         // Output the result in an element with id="demo"
-        var timeString = "Round Week " + (index + 1) + ", Deadline: " + days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+        timeString = "Round Week " + (index + 1) + ", Deadline: " + days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
         console.log(timeString);
         // If the count down is over, write some text 
         if (distance <= 0) {
             index++;
+            console.log(index);
+            if (index == 23) {
+                clearInterval(this);
+            }
             countDownDate = getRound[index].getTime();
-            //GetRoundData(index);
-
-            // UpdatePlayerPoint(index);
 
             //Update User database
             UpdatePointSystem(index);
@@ -82,12 +98,12 @@ module.exports = function (router) {
                     });
                 });
                 setTimeout(() => {
-                    console.log("id" + item._id + "total Point " + totalPoint);
+                    //console.log("id" + item._id + "total Point " + totalPoint);
                     User.findByIdAndUpdate(item._id, { $set: { Point: totalPoint } }, { new: true }, function (err, update) {
                         if (err) {
                             console.log("Team name has already existed");
                         } else {
-                            console.log(update);
+                            //console.log(update);
                         }
                     });
                 }, 9000);
@@ -114,7 +130,7 @@ module.exports = function (router) {
                 }
             })
             .on('end', function (data) {
-                console.log('Update finished' + point);
+                //console.log('Update finished' + point);
 
             })
         return new Promise(resolve => {
@@ -124,6 +140,11 @@ module.exports = function (router) {
             }, 7000);
         });
     }
+     //*****Get Time*/
+    router.get('/getTime', function (req, res) {
+        // console.log("request recieved" + timeString);
+        res.json({ success: true, Time: timeString, round: Round});
+    });
 
     //*****Insert Player Name and team*/
     router.post('/InsertPlayerTable', function (req, res) {
@@ -340,18 +361,21 @@ module.exports = function (router) {
             .pipe(csv())
             .on('data', function (data) {
                 //console.log(data);
-                array.push(data);
+                if (data[4] == index )
+                {
+                    array.push(data);
+                }
                 //res.json({ success: true, result: data });
             })
             .on('end', function (data) {
-                console.log(array);
+                //console.log(array);
                 console.log('read finished');
-                res.json({ success: true, result: array });
+                res.json({ success: true, result: array, round: index });
 
             });
     });
     //*****View All User Point */
-    router.post('/Leaderboard', function (req, res) {
+    router.get('/Leaderboard', function (req, res) {
 
 
         User.find({ Point: { $gt: -1 } }).sort('-Point').exec(function (err, result) {
