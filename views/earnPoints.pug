@@ -118,7 +118,7 @@ head
       // /.col-lg-12
     .row.borads
       .col-lg-12
-          video.col-sm-12(controls='')
+          video#myVideo.col-sm-12(controls='')
             source(src='Videos/Geelong v Melbourne Match Highlights  Round 18 2018  AFL.mp4' type='video/mp4')
           h1(style='color:blue; font-family:Arial, Helvetica, sans-serif; text-align: center;') 
           
@@ -136,6 +136,23 @@ head
             source(src='Videos/NAB Mini Legends  AFL Kids.mp4' type='video/mp4')
           p(style='color:rgb(212, 171, 36);text-align: center;')
             | Richmond v Hawthorn Match Highlights Round 5
+          
+          script.
+            var vid = document.getElementById("myVideo");
+            vid.onended = function() {
+             var txt;
+             var person = prompt("What was the winnning score?", "98");
+              if (person == null || person == "") {
+                txt = "User cancelled the prompt.";
+              } else {
+                txt = person ;
+                //- localStorage.setItem("pointsIncrement","5");
+                location.replace("/updatePoints");
+              } 
+  
+            //- alert("Congratulations, \n The video has ended, you are rewarded 5 points.");
+            };
+
       <br/>
      
 

@@ -230,7 +230,7 @@
             </div>
 
             <div class="modal-body mx-3">
-                <form class="/login_user" method="post" action="index.html" id="signupform">
+                <form class="/login_user" enctype="multipart/form-data" method="post" action="index.html" id="signupform" >
 
 
                     <div class="md-form mb-5">
@@ -260,6 +260,11 @@
                     <div class="md-form mb-4">
                         <i class="fa fa-user"></i>
                         <input type="text" class="form-control validate" name="uname" placeholder="Username">
+
+                    </div>
+                    <div class="md-form mb-4">
+                        <i class="fa fa-user"></i>
+                        <input type="file" name="thisImage">
 
                     </div>
 

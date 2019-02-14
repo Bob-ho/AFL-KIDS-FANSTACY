@@ -159,9 +159,10 @@ head
             a(href='/myteam')
               i.fa.fa-dashboard.fa-fw
               |  My Team
-            a(style="margin-left:20px;" href='/getplayers')
+          li
+            a(href='/getplayers')
               i.fa.fa-table.fa-fw
-              | > Draft Players
+              |  Draft Players
           li
             a(href='/earnPoints' )
               i.fa.fa-dashboard.fa-fw
@@ -203,7 +204,7 @@ head
                     each val,index in playerlist
                       tr
                         td 
-                          img(name="player"+index id=""+val._id alt='' draggable='true' ondragstart='drag(event)' src="/"  )
+                          img(name="player"+index id=""+val.playerid alt='' draggable='true' ondragstart='drag(event)' src="/"  )
                         td
                           h4(style="color: white;")= val.name
                         td
